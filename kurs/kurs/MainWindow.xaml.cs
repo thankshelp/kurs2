@@ -20,6 +20,7 @@ namespace kurs
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public class CChar
         {
             int x, y;
@@ -39,7 +40,17 @@ namespace kurs
                 py = y * h;
 
                 pm = new Ellipse();
-                //...
+
+                pm.Stroke = Brushes.YellowGreen;
+                pm.Fill = Brushes.Yellow;
+                pm.StrokeThickness = 2;
+
+                pm.Width = 45;
+                pm.Height = 45;
+
+                pm.Margin = new Thickness(px, py, 0, 0);
+
+                Game.Children.Add(pm);
             }
 
             public void move(int x, int y, int[,] map)
@@ -57,6 +68,7 @@ namespace kurs
                 pm.RenderTransform = new TranslateTransform(px, py);
             }
 
+            
         }
 
         public class CDir
@@ -69,7 +81,7 @@ namespace kurs
                 this.x = x;
                 this.y = y;
                 dx = 1; 
-                dy = 0;
+                dy = 1;
             }
 
             public void update(int [,] map)
@@ -148,7 +160,7 @@ namespace kurs
         {
             menu.Visibility = Visibility.Hidden;
             Game.Visibility = Visibility.Visible;
-
+            
             Timer.Start();
         }
 
