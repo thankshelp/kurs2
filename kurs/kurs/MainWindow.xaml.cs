@@ -50,7 +50,7 @@ namespace kurs
 
                 pm.Margin = new Thickness(px, py, 0, 0);
 
-                Game.Children.Add(pm);
+                
             }
 
             public void move(int x, int y, int[,] map)
@@ -66,6 +66,11 @@ namespace kurs
                 py = y * h;
 
                 pm.RenderTransform = new TranslateTransform(px, py);
+            }
+
+            public void addToScene(ref Grid scene)
+            {
+                scene.Children.Add(pm);
             }
 
             
@@ -88,6 +93,7 @@ namespace kurs
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
+                //if prohod
                 x = x + dx;
                 y = y + dy;
             }
@@ -118,7 +124,7 @@ namespace kurs
         CDir dir;
         System.Windows.Threading.DispatcherTimer Timer;
 
-
+        //20x16
         public int[,] map = { 
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             { 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
@@ -142,6 +148,7 @@ namespace kurs
             InitializeComponent();
 
             pakman = new CChar(1, 1);
+            pakman.addToScene(ref Game);
             dir = new CDir(1, 1);
 
             Timer = new System.Windows.Threading.DispatcherTimer();
@@ -174,6 +181,7 @@ namespace kurs
         {
             if (e.Key == Key.Left) dir.left();
         }
+
     }
 
    
