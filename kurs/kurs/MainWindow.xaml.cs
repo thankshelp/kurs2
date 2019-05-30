@@ -48,9 +48,8 @@ namespace kurs
                 pm.Width = 45;
                 pm.Height = 45;
 
-                pm.Margin = new Thickness(px, py, 0, 0);
-
-                
+                pm.RenderTransform = new TranslateTransform(px, py);
+                //pm.Margin = new Thickness(px, py, 0, 0);
             }
 
             public void move(int x, int y, int[,] map)
@@ -62,18 +61,24 @@ namespace kurs
                 this.x = x;
                 this.y = y;
 
-                px = x * w;
-                py = y * h;
+                if (px > x * w)
+                    px-=5;
+                if (px < x * w)
+                    px+=5;
+                //px = x * w;
+                if (py > y * h)
+                    py-=5;
+                if (py < y * h)
+                    py+=5;
+                //py = y * h;
 
                 pm.RenderTransform = new TranslateTransform(px, py);
             }
 
-            public void addToScene(ref Grid scene)
+            public void addToScene(ref Canvas scene)
             {
                 scene.Children.Add(pm);
             }
-
-            
         }
 
         public class CDir
@@ -93,29 +98,35 @@ namespace kurs
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
-                //if prohod
-                x = x + dx;
-                y = y + dy;
+                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0))
+                {
+                    x = x + dx;
+                    y = y + dy;
+                }
             }
 
             public void up()
             {
                 dy = 1;
+                dx = 0;
             }
 
             public void down()
             {
                 dy = -1;
+                dx = 0;
             }
 
             public void left()
             {
                 dx = -1;
+                dy = 0;
             }
 
             public void right()
             {
                 dx = 1;
+                dy = 0;
             }
 
         }
@@ -147,13 +158,13 @@ namespace kurs
         {
             InitializeComponent();
 
-            pakman = new CChar(1, 1);
+            pakman = new CChar(5, 1);
             pakman.addToScene(ref Game);
-            dir = new CDir(1, 1);
+            dir = new CDir(5, 1);
 
             Timer = new System.Windows.Threading.DispatcherTimer();
             Timer.Tick += new EventHandler(dispatcherTimer_Tick);
-            Timer.Interval = new TimeSpan(0, 0, 0, 1);
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, 60);
           
         }
 

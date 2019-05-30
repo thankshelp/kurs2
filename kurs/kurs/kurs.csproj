@@ -105,12 +105,11 @@
     <Resource Include="image\menu_bg.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\bt_ex.png" />
+    <Resource Include="image\bt_ex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="image\bt_rd.png" />
     <Resource Include="image\bt_start.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bt_start.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="image\maze.png" />
