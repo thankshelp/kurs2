@@ -191,6 +191,9 @@ namespace kurs
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Left) dir.left();
+            if (e.Key == Key.Right) dir.right();
+            if (e.Key == Key.Down) dir.down();
+            if (e.Key == Key.Up) dir.up();
         }
 
     }

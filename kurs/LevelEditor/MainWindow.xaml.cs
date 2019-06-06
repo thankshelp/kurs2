@@ -119,7 +119,7 @@ namespace LevelEditor
             foreach (Button b in level.Children)
             {
                 
-                File.AppendAllText(dlg.FileName, (b.Tag.ToString() + " "));
+                File.AppendAllText(dlg.FileName, (b.Tag.ToString()));
                 //i++;
                 //if (i % C == 0) File.AppendAllText(dlg.FileName, "\r\n");
             }
@@ -145,7 +145,7 @@ namespace LevelEditor
                     Btn_Click(b, e);
                 }
 
-                i += 2;
+                i += 1;
             }
         }
 
