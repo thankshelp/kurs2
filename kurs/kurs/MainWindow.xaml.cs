@@ -20,8 +20,7 @@ namespace kurs
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        int score;
+        
         public class CChar
         {
             int x, y;
@@ -72,11 +71,11 @@ namespace kurs
                 //pm.Margin = new Thickness(px, py, 0, 0);
             }
 
-            public bool move(int x, int y, int[,] map)
+            public bool move(int x, int y)
             {
-                if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return true;
+                //if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return true;
 
-                if (map[x, y] == 1) return true;
+                //if (map[x, y] == 1) return true;
 
 
                 this.x = x;
@@ -151,10 +150,13 @@ namespace kurs
         {
             int x, y;
             int px, py;
+            int dx, dy;
 
             int h, w;
             Rectangle ghost1, ghost2, ghost3;
-            ImageBrush ib = new ImageBrush();
+            ImageBrush ib1 = new ImageBrush();
+            ImageBrush ib2 = new ImageBrush();
+            ImageBrush ib3 = new ImageBrush();
             int currentFrame;
             int currentRow;
 
@@ -172,19 +174,19 @@ namespace kurs
                 ghost2 = new Rectangle();
                 ghost3 = new Rectangle();
 
-                ghost1.Stroke = Brushes.Purple;
-                ghost1.Fill = Brushes.Red;
-                ghost2.Stroke = Brushes.Purple;
-                ghost2.Fill = Brushes.Blue;
-                ghost3.Stroke = Brushes.Purple;
-                ghost3.Fill = Brushes.Green;
-                //pm.StrokeThickness = 2;
-                ghost1.HorizontalAlignment = HorizontalAlignment.Left;
-                ghost1.VerticalAlignment = VerticalAlignment.Center;
-                ghost2.HorizontalAlignment = HorizontalAlignment.Left;
-                ghost2.VerticalAlignment = VerticalAlignment.Center;
-                ghost3.HorizontalAlignment = HorizontalAlignment.Left;
-                ghost3.VerticalAlignment = VerticalAlignment.Center;
+                //ghost1.Stroke = Brushes.Purple;
+                //ghost1.Fill = Brushes.Red;
+                //ghost2.Stroke = Brushes.Purple;
+                //ghost2.Fill = Brushes.Blue;
+                //ghost3.Stroke = Brushes.Purple;
+                //ghost3.Fill = Brushes.Green;
+                ////pm.StrokeThickness = 2;
+                //ghost1.HorizontalAlignment = HorizontalAlignment.Left;
+                //ghost1.VerticalAlignment = VerticalAlignment.Center;
+                //ghost2.HorizontalAlignment = HorizontalAlignment.Left;
+                //ghost2.VerticalAlignment = VerticalAlignment.Center;
+                //ghost3.HorizontalAlignment = HorizontalAlignment.Left;
+                //ghost3.VerticalAlignment = VerticalAlignment.Center;
 
                 ghost1.Width = 45;
                 ghost1.Height = 45;
@@ -193,26 +195,44 @@ namespace kurs
                 ghost3.Width = 45;
                 ghost3.Height = 45;
 
-                //ib.AlignmentX = AlignmentX.Left;
-                //ib.AlignmentY = AlignmentY.Top;
-                //ib.Stretch = Stretch.None;
+                ib1.AlignmentX = AlignmentX.Left;
+                ib1.AlignmentY = AlignmentY.Top;
+                ib1.Stretch = Stretch.None;
+                ib2.AlignmentX = AlignmentX.Left;
+                ib2.AlignmentY = AlignmentY.Top;
+                ib2.Stretch = Stretch.None;
+                ib3.AlignmentX = AlignmentX.Left;
+                ib3.AlignmentY = AlignmentY.Top;
+                ib3.Stretch = Stretch.None;
 
-                //ib.Viewbox = new Rect(10, 10, 0, 0);
-                //ib.ViewboxUnits = BrushMappingMode.Absolute;
 
-                //currentFrame = 0;
+                ib1.Viewbox = new Rect(0, 0, 0, 0);
+                ib1.ViewboxUnits = BrushMappingMode.Absolute;
+                ib2.Viewbox = new Rect(0, 0, 0, 0);
+                ib2.ViewboxUnits = BrushMappingMode.Absolute;
+                ib3.Viewbox = new Rect(0, 0, 0, 0);
+                ib3.ViewboxUnits = BrushMappingMode.Absolute;
+
+                currentFrame = 0;
 
 
-                //ib.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/pm (1).png", UriKind.Absolute));
+                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_b.png", UriKind.Absolute));
+                ib2.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r.png", UriKind.Absolute));
+                ib3.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_g.png", UriKind.Absolute));
 
-                //pm.Fill = ib;
+                ghost1.Fill = ib1;
+                ghost2.Fill = ib2;
+                ghost3.Fill = ib3;
 
                 ghost1.RenderTransform = new TranslateTransform(px, py);
-                ghost2.RenderTransform = new TranslateTransform(px+45, py);
-                ghost3.RenderTransform = new TranslateTransform(px+90, py);
+                ghost2.RenderTransform = new TranslateTransform(px + 45, py);
+                ghost3.RenderTransform = new TranslateTransform(px + 90, py);
 
 
             }
+
+        
+        
             public void addToScene(ref Canvas scene)
             {
                 scene.Children.Add(ghost1);
@@ -225,6 +245,8 @@ namespace kurs
         {
             public int x, y;
             int dx, dy;
+            Ellipse r;
+
 
             public CDir(int x, int y)
             {
@@ -233,18 +255,48 @@ namespace kurs
                 dx = 1; 
                 dy = 1;
             }
+            public void points(int[,] map, ref Canvas scene)
+            {
+                for (int i = 0; i < map.GetLength(0); i++)
+                    for (int j = 0; j < map.GetLength(1); j++)
+                    {
+                         r = new Ellipse();
 
-            public void update(int [,] map)
+                        if (map[i, j] == 2)
+                        {
+                            r.Fill = Brushes.Azure;
+                            r.Width = 10;
+                            r.Height = 10;
+                        }
+
+                        if (map[i, j] == 3)
+                        {
+                            r.Fill = Brushes.Azure;
+                            r.Width = 20;
+                            r.Height = 20;
+                        }
+
+                        r.StrokeThickness = 2;
+
+
+
+                        r.RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
+                        scene.Children.Add(r);
+                    }
+
+            }
+            public void update(int [,] map, ref Canvas scene)
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
-                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0))
+                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
                 {
                     x = x + dx;
                     y = y + dy;
-                    if (map[x + dx, y + dy] == 2)
+                    if ((map[x, y] == 2) || (map[x, y] == 3))
                     {
-                        map[x + dx, y + dy] = 0;
+                        map[x, y] = 0;
+                        scene.Children.Remove(r);
                     }
                 }
 
@@ -275,10 +327,12 @@ namespace kurs
                 dy = 0;
             }
 
+          
+
         }
 
         CChar pakman;
-        Enemy gh1, gh2, gh3;
+        Enemy gh;
         CDir dir;
         System.Windows.Threading.DispatcherTimer Timer;
 
@@ -304,24 +358,24 @@ namespace kurs
        
         public int[,] map = {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,0,2,2,1,2,2,2,1,1,2,2,2,2,2,1},
+                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
                 {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
                 {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
                 {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
                 {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
-                {1,2,1,2,2,2,2,2,2,1,2,2,2,1,2,1},
+                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
                 {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
                 {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
-                {1,1,1,2,1,0,0,0,2,1,1,1,2,1,1,1},
+                {1,1,1,0,1,0,0,0,2,1,1,1,2,1,1,1},
                 {1,1,1,2,1,0,0,0,2,1,1,1,2,1,1,1},
                 {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
                 {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
-                {1,2,1,2,2,2,2,2,2,1,2,2,2,1,2,1},
+                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
                 {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
                 {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
                 {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
                 {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
-                {1,2,2,2,1,2,2,2,1,1,2,2,2,2,2,1},
+                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 }; 
 
@@ -329,62 +383,35 @@ namespace kurs
         {
             InitializeComponent();
 
-            pakman = new CChar(1, 1);
+            pakman = new CChar(9, 3);
 
-            gh1 = new Enemy(8, 5);
-            //gh2 = new Enemy(9, 5);
-            //gh3 = new Enemy(10, 5);
+            gh = new Enemy(8, 5);
+           
 
-            dir = new CDir(1, 1);
+            dir = new CDir(9, 3);
 
             Timer = new System.Windows.Threading.DispatcherTimer();
             Timer.Tick += new EventHandler(dispatcherTimer_Tick);
             Timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
-             
 
-            for (int i = 0; i < map.GetLength(0); i++)
-                for (int j = 0; j < map.GetLength(1); j++)
-                {
-                   Ellipse r = new Ellipse();
 
-                    if (map[i, j] == 2)
-                    {
-                        r.Fill = Brushes.Azure;
-                        r.Width = 13;
-                        r.Height = 13;
-                    }
 
-                    if (map[i, j] == 3)
-                    {
-                        r.Fill = Brushes.Azure;
-                        r.Width = 20;
-                        r.Height = 20;
-                    }
-
-                    r.StrokeThickness = 2;
-
-                      
-
-                   r.RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
-                    Game.Children.Add(r);
-                }
-
+            dir.points(map, ref Game);
             pakman.addToScene(ref Game);
-            gh1.addToScene(ref Game);
-            //gh2.addToScene(ref Game);
-            //gh3.addToScene(ref Game);
-
+            gh.addToScene(ref Game);
+         
 
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-
-            if (pakman.move(dir.x, dir.y, map) == true)
+            
+            if (pakman.move(dir.x, dir.y) == true)
             {
-                dir.update(map);
-                //Game.Children.Remove(r);
+                dir.update(map,ref Game);
             }
+
+           
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
