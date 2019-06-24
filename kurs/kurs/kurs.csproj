@@ -128,13 +128,11 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\gh_b.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="image\gh_r.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="image\gh_b копия.png" />
     <Resource Include="image\gh_g.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="image\gh копия.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

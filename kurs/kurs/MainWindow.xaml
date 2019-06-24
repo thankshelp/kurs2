@@ -9,28 +9,28 @@
     <Grid>
         <Grid x:Name="menu" HorizontalAlignment="Left" Height="720" Margin="0,0,0,0" VerticalAlignment="Top" Width="900">
             <Grid.Background>
-                <ImageBrush ImageSource="D:\Программирование\2 семестр\kurs\kurs\kurs\image\menu_bg.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\ri-89\kurs\kurs\image\menu_bg.png"/>
             </Grid.Background>
             <Button x:Name="start" HorizontalAlignment="Left" Height="86" Margin="256,359,0,0" VerticalAlignment="Top" Width="387" Click="Start_Click" BorderBrush="Black" MouseEnter="Start_MouseEnter" Background="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}">
-                <Image Source="D:\Программирование\2 семестр\kurs\kurs\kurs\image\bt_start.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
+                <Image Source="C:\Users\Admin\Desktop\ri-89\kurs\kurs\image\bt_start.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
             </Button>
             <Button x:Name="tabl" Height="84" Margin="256,482,0,0" VerticalAlignment="Top" BorderBrush="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}" HorizontalAlignment="Left" Width="387">
                 <Button.Background>
                     <ImageBrush/>
                 </Button.Background>
-                <Image Source="D:\Программирование\2 семестр\kurs\kurs\kurs\image\bt_rd.png" Width="387"/>
+                <Image Source="C:\Users\Admin\Desktop\ri-89\kurs\kurs\image\bt_rd.png" Width="387"/>
 
             </Button>
             <Button x:Name="exit" HorizontalAlignment="Left" Height="81" Margin="256,598,0,0" VerticalAlignment="Top" Width="387" BorderBrush="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}">
                 <Button.Background>
                     <ImageBrush/>
                 </Button.Background>
-                <Image Source="D:\Программирование\2 семестр\kurs\kurs\kurs\image\bt_ex.png" Width="346"/>
+                <Image Source="C:\Users\Admin\Desktop\ri-89\kurs\kurs\image\bt_ex.png" Width="346"/>
             </Button>
         </Grid>
         <Canvas x:Name="Game" HorizontalAlignment="Left" Height="720" Margin="0,0,0,0" VerticalAlignment="Top" Width="900" Visibility="Hidden">
             <Canvas.Background>
-                <ImageBrush ImageSource="D:\Программирование\2 семестр\kurs\kurs\kurs\image\maze.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\ri-89\kurs\kurs\image\maze.png"/>
             </Canvas.Background>
         </Canvas>
     </Grid>

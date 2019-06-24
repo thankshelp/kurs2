@@ -20,11 +20,38 @@ namespace kurs
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-        public class CChar
-        {
+        public Ellipse[,] map2;
+
+        public int[,] map = {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
+                {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
+                {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
+                {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
+                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
+                {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
+                {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
+                {1,1,1,0,1,0,0,0,2,1,1,1,2,1,1,1},
+                {1,1,1,2,1,0,0,0,2,1,1,1,2,1,1,1},
+                {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
+                {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
+                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
+                {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
+                {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
+                {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
+                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        }; 
+
+    
+
+            public class CChar
+             {
             int x, y;
             int px, py;
+            Ellipse r;
 
             int h, w;
             Ellipse pm;
@@ -71,7 +98,7 @@ namespace kurs
                 //pm.Margin = new Thickness(px, py, 0, 0);
             }
 
-            public bool move(int x, int y)
+            public bool move(int x, int y, Ellipse[,] map2, ref Canvas scene)
             {
                 //if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return true;
 
@@ -135,16 +162,20 @@ namespace kurs
 
                 pm.RenderTransform = new TranslateTransform(px, py);
 
-                if ((px == x * w) && (py == y * h)) return true;
+                if ((px == x * w) && (py == y * h)) {
+                    
+                    scene.Children.Remove(map2[x,y]);
+                    return true; }
                 else return false;
 
             }
+          
 
-            public void addToScene(ref Canvas scene)
-            {
-                scene.Children.Add(pm);
+                 public void addToScene(ref Canvas scene)
+                 {
+                      scene.Children.Add(pm);
+                 }
             }
-        }
 
         public class Enemy
         {
@@ -167,8 +198,8 @@ namespace kurs
 
                 w = h = 45;
 
-                px = x * w;
-                py = y * h;
+                dx = x * w;
+                dy = y * h;
 
                 ghost1 = new Rectangle();
                 ghost2 = new Rectangle();
@@ -206,7 +237,7 @@ namespace kurs
                 ib3.Stretch = Stretch.None;
 
 
-                ib1.Viewbox = new Rect(0, 0, 0, 0);
+                ib1.Viewbox = new Rect(-2, -1, 0,0 );
                 ib1.ViewboxUnits = BrushMappingMode.Absolute;
                 ib2.Viewbox = new Rect(0, 0, 0, 0);
                 ib2.ViewboxUnits = BrushMappingMode.Absolute;
@@ -216,8 +247,8 @@ namespace kurs
                 currentFrame = 0;
 
 
-                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_b.png", UriKind.Absolute));
-                ib2.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r.png", UriKind.Absolute));
+                ib2.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_b копия.png", UriKind.Absolute));
+                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh копия.png", UriKind.Absolute));
                 ib3.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_g.png", UriKind.Absolute));
 
                 ghost1.Fill = ib1;
@@ -232,7 +263,55 @@ namespace kurs
             }
 
         
-        
+                public bool move(int x, int y, int px, int py)
+                {
+                    this.x = x;
+                    this.y = y;
+                if ((-5 <= (px-dx) && (px-dx) <= 0) || ((px-dx <=5) && (px-dx) >= 0))
+                {
+                    //приследование
+                }
+                else
+                {
+                    //рандом
+                }
+
+                if (dx > x * w)
+                {
+                    dx -= 1;
+                   
+                }
+                if (dx < x * w)
+                {
+                    dx += 1;
+                   
+                }
+
+                //px = x * w;
+                if (dy > y * h)
+                {
+                    dy -= 1;
+                   
+                }
+
+                if (dy < y * h)
+                {
+                    dy += 1;
+                  
+                }
+
+                //py = y * h;
+
+                ghost1.RenderTransform = new TranslateTransform(dx, dy);
+
+                if ((dx == x * w) && (dy == y * h))
+               
+                    return true;
+                
+                else return false;
+
+            }
+
             public void addToScene(ref Canvas scene)
             {
                 scene.Children.Add(ghost1);
@@ -241,11 +320,81 @@ namespace kurs
             }
         }
 
-        public class CDir
+        public class GDir
         {
             public int x, y;
             int dx, dy;
-            Ellipse r;
+
+            public GDir(int x,int y)
+            {
+                this.x = x;
+                this.y = y;
+                dx = 1;
+                dy = 1;
+            }
+
+            public void updateg(int[,] map)
+            {
+                if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
+
+                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
+                {
+                    x = x + dx;
+                    y = y + dy;
+
+                }
+                else
+                {
+                    int s = new Random().Next(0, 3);
+                    if (s == 0)
+                    {
+                        up();
+                    }
+                    if (s == 1)
+                    {
+                        down();
+                    }
+                    if(s == 2)
+                    {
+                        left();
+                    }
+                    if (s == 3)
+                    {
+                        right();
+                    }
+                }
+                       
+            }
+            public void up()
+                {
+                    dy = -1;
+                    dx = 0;
+                }
+
+                public void down()
+                {
+                    dy = 1;
+                    dx = 0;
+                }
+
+                public void left()
+                {
+                    dx = -1;
+                    dy = 0;
+                }
+
+                public void right()
+                {
+                    dx = 1;
+                    dy = 0;
+                }
+        }
+
+         public class CDir
+        {
+            public int x, y;
+            int dx, dy;
+            
 
 
             public CDir(int x, int y)
@@ -255,37 +404,8 @@ namespace kurs
                 dx = 1; 
                 dy = 1;
             }
-            public void points(int[,] map, ref Canvas scene)
-            {
-                for (int i = 0; i < map.GetLength(0); i++)
-                    for (int j = 0; j < map.GetLength(1); j++)
-                    {
-                         r = new Ellipse();
-
-                        if (map[i, j] == 2)
-                        {
-                            r.Fill = Brushes.Azure;
-                            r.Width = 10;
-                            r.Height = 10;
-                        }
-
-                        if (map[i, j] == 3)
-                        {
-                            r.Fill = Brushes.Azure;
-                            r.Width = 20;
-                            r.Height = 20;
-                        }
-
-                        r.StrokeThickness = 2;
-
-
-
-                        r.RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
-                        scene.Children.Add(r);
-                    }
-
-            }
-            public void update(int [,] map, ref Canvas scene)
+            
+            public void update(int [,] map)
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
@@ -296,8 +416,8 @@ namespace kurs
                     if ((map[x, y] == 2) || (map[x, y] == 3))
                     {
                         map[x, y] = 0;
-                        scene.Children.Remove(r);
                     }
+                   
                 }
 
 
@@ -334,6 +454,8 @@ namespace kurs
         CChar pakman;
         Enemy gh;
         CDir dir;
+        GDir gir;
+        int score;
         System.Windows.Threading.DispatcherTimer Timer;
 
         //16x20
@@ -355,29 +477,47 @@ namespace kurs
         //{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
         //{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }; 
 
-       
-        public int[,] map = {
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
-                {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
-                {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
-                {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
-                {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
-                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
-                {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
-                {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
-                {1,1,1,0,1,0,0,0,2,1,1,1,2,1,1,1},
-                {1,1,1,2,1,0,0,0,2,1,1,1,2,1,1,1},
-                {1,2,2,2,1,0,0,1,2,2,2,1,2,2,2,1},
-                {1,2,1,2,1,1,1,1,2,1,2,1,2,1,2,1},
-                {1,2,1,2,2,2,3,2,2,1,2,2,2,1,2,1},
-                {1,2,1,1,1,1,2,1,1,1,1,1,2,1,2,1},
-                {1,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
-                {1,2,1,2,1,1,1,2,1,1,2,1,2,1,2,1},
-                {1,2,1,2,2,2,1,2,1,1,2,1,2,1,2,1},
-                {1,2,3,2,1,2,2,2,1,1,2,2,2,2,3,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                }; 
+
+
+        void fillmap2(int[,] map, ref Canvas scene)
+        {
+            map2 = new Ellipse[20, 16];
+
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i, j] == 2 || map[i, j] == 3)
+                    {
+
+                        if (map[i, j] == 2)
+                        {
+                            map2[i, j] = new Ellipse();
+                            map2[i, j].Fill = Brushes.Azure;
+                            map2[i, j].Width = 10;
+                            map2[i, j].Height = 10;
+                            map2[i, j].StrokeThickness = 2;
+                            map2[i, j].RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
+                            scene.Children.Add(map2[i, j]);
+                        }
+                        
+                        if (map[i, j] == 3)
+                        {
+                            map2[i, j] = new Ellipse();
+                            map2[i, j].Fill = Brushes.Azure;
+                            map2[i, j].Width = 20;
+                            map2[i, j].Height = 20;
+                            map2[i, j].StrokeThickness = 2;
+                            map2[i, j].RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
+                            scene.Children.Add(map2[i, j]);
+                        }
+                       // else map2[i, j] = null;
+                    }
+                    else map2[i, j] = null;
+                }
+            }
+        }
+
 
         public MainWindow()
         {
@@ -386,8 +526,8 @@ namespace kurs
             pakman = new CChar(9, 3);
 
             gh = new Enemy(8, 5);
-           
 
+            gir = new GDir(8, 5);
             dir = new CDir(9, 3);
 
             Timer = new System.Windows.Threading.DispatcherTimer();
@@ -396,7 +536,7 @@ namespace kurs
 
 
 
-            dir.points(map, ref Game);
+            fillmap2(map, ref Game);
             pakman.addToScene(ref Game);
             gh.addToScene(ref Game);
          
@@ -406,11 +546,14 @@ namespace kurs
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             
-            if (pakman.move(dir.x, dir.y) == true)
+            if (pakman.move(dir.x, dir.y, map2, ref Game) == true)
             {
-                dir.update(map,ref Game);
+                dir.update(map);
             }
-
+            if (gh.move(gir.x,gir.y) == true)
+            {
+                gir.updateg(map);
+            }
            
         }
 
