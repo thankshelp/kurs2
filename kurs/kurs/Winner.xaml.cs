@@ -15,13 +15,25 @@ using System.Windows.Shapes;
 namespace kurs
 {
     /// <summary>
-    /// Логика взаимодействия для lvl2.xaml
+    /// Логика взаимодействия для Winner.xaml
     /// </summary>
-    public partial class lvl2 : Window
+    public partial class Winner : Window
     {
-        public lvl2()
+        public Winner()
         {
             InitializeComponent();
+        }
+
+        public Winner(int score)
+        {
+            InitializeComponent();
+
+            scr.Content = "Your score:" + score;
+        }
+
+        private void Done_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
         }
     }
 }

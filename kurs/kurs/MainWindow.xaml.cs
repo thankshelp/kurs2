@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace kurs
 {
@@ -169,9 +170,9 @@ namespace kurs
                 else return false;
 
             }
-          
 
-                 public void addToScene(ref Canvas scene)
+           
+            public void addToScene(ref Canvas scene)
                  {
                       scene.Children.Add(pm);
                  }
@@ -180,14 +181,12 @@ namespace kurs
         public class Enemy
         {
             int x, y;
-            int px, py;
             int dx, dy;
 
             int h, w;
-            Rectangle ghost1, ghost2, ghost3;
+            Rectangle ghost1;
             ImageBrush ib1 = new ImageBrush();
-            ImageBrush ib2 = new ImageBrush();
-            ImageBrush ib3 = new ImageBrush();
+
             int currentFrame;
             int currentRow;
 
@@ -202,102 +201,166 @@ namespace kurs
                 dy = y * h;
 
                 ghost1 = new Rectangle();
-                ghost2 = new Rectangle();
-                ghost3 = new Rectangle();
 
-                //ghost1.Stroke = Brushes.Purple;
-                //ghost1.Fill = Brushes.Red;
-                //ghost2.Stroke = Brushes.Purple;
-                //ghost2.Fill = Brushes.Blue;
-                //ghost3.Stroke = Brushes.Purple;
-                //ghost3.Fill = Brushes.Green;
-                ////pm.StrokeThickness = 2;
-                //ghost1.HorizontalAlignment = HorizontalAlignment.Left;
-                //ghost1.VerticalAlignment = VerticalAlignment.Center;
-                //ghost2.HorizontalAlignment = HorizontalAlignment.Left;
-                //ghost2.VerticalAlignment = VerticalAlignment.Center;
-                //ghost3.HorizontalAlignment = HorizontalAlignment.Left;
-                //ghost3.VerticalAlignment = VerticalAlignment.Center;
+
 
                 ghost1.Width = 45;
-                ghost1.Height = 45;
-                ghost2.Width = 45;
-                ghost2.Height = 45;
-                ghost3.Width = 45;
-                ghost3.Height = 45;
+                ghost1.Height = 50;
 
                 ib1.AlignmentX = AlignmentX.Left;
                 ib1.AlignmentY = AlignmentY.Top;
                 ib1.Stretch = Stretch.None;
-                ib2.AlignmentX = AlignmentX.Left;
-                ib2.AlignmentY = AlignmentY.Top;
-                ib2.Stretch = Stretch.None;
-                ib3.AlignmentX = AlignmentX.Left;
-                ib3.AlignmentY = AlignmentY.Top;
-                ib3.Stretch = Stretch.None;
 
 
-                ib1.Viewbox = new Rect(-2, -1, 0,0 );
+
+                ib1.Viewbox = new Rect(0, 0, 0, 0);
                 ib1.ViewboxUnits = BrushMappingMode.Absolute;
-                ib2.Viewbox = new Rect(0, 0, 0, 0);
-                ib2.ViewboxUnits = BrushMappingMode.Absolute;
-                ib3.Viewbox = new Rect(0, 0, 0, 0);
-                ib3.ViewboxUnits = BrushMappingMode.Absolute;
 
                 currentFrame = 0;
-
-
-                ib2.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_b копия.png", UriKind.Absolute));
-                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh копия.png", UriKind.Absolute));
-                ib3.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_g.png", UriKind.Absolute));
+                
+                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
 
                 ghost1.Fill = ib1;
-                ghost2.Fill = ib2;
-                ghost3.Fill = ib3;
 
-                ghost1.RenderTransform = new TranslateTransform(px, py);
-                ghost2.RenderTransform = new TranslateTransform(px + 45, py);
-                ghost3.RenderTransform = new TranslateTransform(px + 90, py);
 
+                ghost1.RenderTransform = new TranslateTransform(dx, dy);
 
             }
-
-        
-                public bool move(int x, int y, int px, int py)
-                {
-                    this.x = x;
-                    this.y = y;
-                if ((-5 <= (px-dx) && (px-dx) <= 0) || ((px-dx <=5) && (px-dx) >= 0))
-                {
-                    //приследование
+            public bool mode(int gx, int gy, int px, int py)
+            {
+                if ((((px-gx) <= 3) && ((px-gx)>= -3)) && (((py-gy) <=3) && ((py-gy) >= -3)))
+                { 
+                    
+                    //преследование
+                    return true;
                 }
                 else
                 {
                     //рандом
+                    return false;
                 }
+            }
+            public void bonusMode(int x, int y)
+            {
+               
+
+                this.x = x;
+                this.y = y;
+
+                
+                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh.png", UriKind.Absolute));
+                ghost1.Fill = ib1;
+
+                var frameCount = 3;
+                var frameW = 55;
+                var frameH = 55;
 
                 if (dx > x * w)
                 {
                     dx -= 1;
-                   
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 2;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
                 }
                 if (dx < x * w)
                 {
                     dx += 1;
-                   
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 1;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
                 }
 
                 //px = x * w;
                 if (dy > y * h)
                 {
                     dy -= 1;
-                   
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 0;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
                 }
 
                 if (dy < y * h)
                 {
                     dy += 1;
-                  
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 3;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                }
+
+                //py = y * h;
+
+                ghost1.RenderTransform = new TranslateTransform(dx, dy);
+
+                if ((dx == x * w) && (dy == y * h)) return;
+                
+            }
+
+        public bool move(int x, int y)
+                {
+                    this.x = x;
+                    this.y = y;
+
+                ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
+                ghost1.Fill = ib1;
+
+                var frameCount = 3;
+                var frameW = 55;
+                var frameH = 55;
+
+                if (dx > x * w)
+                {
+                    dx -= 1;
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 2;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop , frameLeft + frameW, frameTop + frameH);
+                }
+                if (dx < x * w)
+                {
+                    dx += 1;
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 1;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                }
+
+                //px = x * w;
+                if (dy > y * h)
+                {
+                    dy -= 1;
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 0;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                }
+
+                if (dy < y * h)
+                {
+                    dy += 1;
+                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                    currentRow = 3;
+
+                    var frameLeft = currentFrame * frameW;
+                    var frameTop = currentRow * frameH;
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
                 }
 
                 //py = y * h;
@@ -315,8 +378,6 @@ namespace kurs
             public void addToScene(ref Canvas scene)
             {
                 scene.Children.Add(ghost1);
-                scene.Children.Add(ghost2);
-                scene.Children.Add(ghost3);
             }
         }
 
@@ -333,7 +394,7 @@ namespace kurs
                 dy = 1;
             }
 
-            public void updateg(int[,] map)
+            public void randomUpdate(int[,] map)
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
@@ -341,7 +402,7 @@ namespace kurs
                 {
                     x = x + dx;
                     y = y + dy;
-
+                    
                 }
                 else
                 {
@@ -365,6 +426,11 @@ namespace kurs
                 }
                        
             }
+            public void chase(int[,] map)
+            {
+
+            }
+
             public void up()
                 {
                     dy = -1;
@@ -404,8 +470,30 @@ namespace kurs
                 dx = 1; 
                 dy = 1;
             }
-            
-            public void update(int [,] map)
+
+            public int k(int[,] map, int k)
+            {
+                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 3))
+                {
+                    k--;
+                }
+                return k;
+            }
+
+            public int score(int[,] map, int s)
+            {
+                if ((map[x + dx, y + dy] == 2))
+                {
+                    s += 10;
+                }
+
+                if (map[x + dx, y + dy] == 3)
+                {
+                    s += 20;
+                }
+                return s;
+            }
+            public void Update(int [,] map, DispatcherTimer Deathtimer, DispatcherTimer ghTimer)
             {
                 if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
 
@@ -413,11 +501,19 @@ namespace kurs
                 {
                     x = x + dx;
                     y = y + dy;
-                    if ((map[x, y] == 2) || (map[x, y] == 3))
+
+                    if ((map[x, y] == 2))
                     {
                         map[x, y] = 0;
+                       
                     }
-                   
+                    if (map[x, y] == 3)
+                    {
+                        map[x, y] = 0;
+                        ghTimer.Stop();
+                        Deathtimer.Start();
+                        
+                    }
                 }
 
 
@@ -455,8 +551,12 @@ namespace kurs
         Enemy gh;
         CDir dir;
         GDir gir;
-        int score;
-        System.Windows.Threading.DispatcherTimer Timer;
+        int score = 0;
+        int i = 0;
+        int k = 141;
+        System.Windows.Threading.DispatcherTimer pmTimer;
+        System.Windows.Threading.DispatcherTimer ghTimer;
+        System.Windows.Threading.DispatcherTimer DeathTimer;
 
         //16x20
 
@@ -508,7 +608,7 @@ namespace kurs
                             map2[i, j].Width = 20;
                             map2[i, j].Height = 20;
                             map2[i, j].StrokeThickness = 2;
-                            map2[i, j].RenderTransform = new TranslateTransform(i * 45 + 15, j * 45 + 15);
+                            map2[i, j].RenderTransform = new TranslateTransform(i * 45 + 11, j * 45 + 10);
                             scene.Children.Add(map2[i, j]);
                         }
                        // else map2[i, j] = null;
@@ -530,10 +630,17 @@ namespace kurs
             gir = new GDir(8, 5);
             dir = new CDir(9, 3);
 
-            Timer = new System.Windows.Threading.DispatcherTimer();
-            Timer.Tick += new EventHandler(dispatcherTimer_Tick);
-            Timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            pmTimer = new System.Windows.Threading.DispatcherTimer();
+            pmTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            pmTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
+            ghTimer = new System.Windows.Threading.DispatcherTimer();
+            ghTimer.Tick += new EventHandler(dispatcherGhostTimer_Tick);
+            ghTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+
+            DeathTimer = new System.Windows.Threading.DispatcherTimer();
+            DeathTimer.Tick += new EventHandler(dispatcherDeathTimer_Tick);
+            DeathTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
 
             fillmap2(map, ref Game);
@@ -542,19 +649,62 @@ namespace kurs
          
 
         }
-
+        private void dispatcherDeathTimer_Tick(object sender, EventArgs e)
+        {
+            if (i != 600)
+            {
+                gh.bonusMode(1, 1);
+                i++;
+            }
+            else
+            {
+                DeathTimer.Stop();
+                ghTimer.Start();
+                i = 0;
+            }
+            
+        }
+        private void dispatcherGhostTimer_Tick(object sender, EventArgs e)
+            {
+              if (gh.mode(gir.x, gir.y, dir.x, dir.y) == false)
+              {
+                    if (gh.move(gir.x, gir.y) == true)
+                    {
+                        gir.randomUpdate(map);
+                    }
+              }
+              else
+              {
+                
+              }
+        }
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             
             if (pakman.move(dir.x, dir.y, map2, ref Game) == true)
             {
-                dir.update(map);
-            }
-            if (gh.move(gir.x,gir.y) == true)
-            {
-                gir.updateg(map);
+                k = dir.k(map, k);
+                score = dir.score(map, score);
+                
+                dir.Update(map, DeathTimer, ghTimer);
+
+                if (k == 0)
+                {
+                    pmTimer.Stop();
+                    ghTimer.Stop();
+                    DeathTimer.Stop();
+
+                    Winner win = new Winner(score);
+
+                    if(win.ShowDialog() == true)
+                    {
+                        string name = win.name.Text; 
+                    }
+                    
+                }
             }
            
+            sc.Content = score;
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
@@ -562,7 +712,8 @@ namespace kurs
             menu.Visibility = Visibility.Hidden;
             Game.Visibility = Visibility.Visible;
             
-            Timer.Start();
+            pmTimer.Start();
+            ghTimer.Start();
         }
 
         private void Start_MouseEnter(object sender, MouseEventArgs e)

@@ -55,10 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="lvl2.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Winner.xaml.cs">
+      <DependentUpon>Winner.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,13 +66,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="lvl2.xaml.cs">
-      <DependentUpon>lvl2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Winner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -128,11 +128,14 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\gh_b копия.png" />
-    <Resource Include="image\gh_g.png" />
+    <Resource Include="image\eye.png" />
+    <Resource Include="image\gh.png" />
+    <Resource Include="image\gh_b %281%29.png" />
+    <Resource Include="image\gh_g %281%29.png" />
+    <Resource Include="image\gh_r %281%29.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\gh копия.png" />
+    <Resource Include="image\eye %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
