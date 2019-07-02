@@ -1,0 +1,26 @@
+﻿<Window x:Class="kurs.Winner"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:kurs"
+        mc:Ignorable="d"
+        Title="Winner" Height="530.5" Width="411.5" Background="{x:Null}">
+    <Grid Margin="0,0,2,5" Height="494" VerticalAlignment="Bottom" Width="400">
+        <Grid.Background>
+            <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\name_bg.png"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="name" HorizontalAlignment="Left" Height="55" Margin="30,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="338" Grid.ColumnSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" SelectionBrush="{x:Null}"/>
+        <Label x:Name="scr" Content="" HorizontalAlignment="Left" Height="80" Margin="57,252,0,0" VerticalAlignment="Top" Width="285" Grid.ColumnSpan="2" FontSize="36" Foreground="#FFD71B73"/>
+        <Button x:Name="done" Content="Done" HorizontalAlignment="Left" Height="60" Margin="57,365,0,0" VerticalAlignment="Top" Width="285" Click="Done_Click" Style="{DynamicResource myStyleIsAdongDigiDigi}" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.Column="1">
+            <Button.Background>
+                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\d_bt.png"/>
+            </Button.Background>
+        </Button>
+
+    </Grid>
+</Window>
