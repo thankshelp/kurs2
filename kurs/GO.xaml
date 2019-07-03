@@ -8,16 +8,16 @@
         Title="GO" Height="532.45" Width="408">
     <Grid Margin="0,0,2,5" Height="494" VerticalAlignment="Bottom" Width="400">
         <Grid.Background>
-            <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\over_bg.png"/>
+            <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\over_bg.png"/>
         </Grid.Background>
-        <Button x:Name="menu" Content="menu" HorizontalAlignment="Left" Height="68" Margin="116,268,0,0" VerticalAlignment="Top" Width="198" Click="Menu_Click">
+        <Button x:Name="menu" Content="menu" HorizontalAlignment="Left" Height="68" Margin="116,268,0,0" VerticalAlignment="Top" Width="198" Click="Menu_Click" BorderBrush="{x:Null}">
             <Button.Background>
-                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\menu_bt.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\menu_bt.png"/>
             </Button.Background>
         </Button>
-        <Button x:Name="exit" Content="exit" HorizontalAlignment="Left" Height="80" Margin="116,336,0,0" VerticalAlignment="Top" Width="198" Click="Exit_Click">
+        <Button x:Name="exit" Content="exit" HorizontalAlignment="Left" Height="80" Margin="116,336,0,0" VerticalAlignment="Top" Width="198" Click="Exit_Click" BorderBrush="{x:Null}">
             <Button.Background>
-                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\exit2_bt.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\exit2_bt.png"/>
             </Button.Background>
         </Button>
     </Grid>

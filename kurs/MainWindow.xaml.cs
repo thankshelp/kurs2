@@ -53,15 +53,37 @@ namespace kurs
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
         };
 
+        public class SPoint
+        {
+            public int X;
+            public int Y;
 
+            public SPoint()
+            {
+                X = 0;
+                Y = 0;
+            }
+
+            public static SPoint operator+ (SPoint a, SPoint b)
+            {
+                SPoint r = new SPoint();
+                r.X = a.X + b.X;
+                r.Y = a.Y + b.Y;
+                return r;
+            }
+        }
 
         public class CChar
-            {
-            public int x, y;
-            public int px, py;
-            Ellipse r;
+        {
+            public SPoint mpos = new SPoint(); //position in map
+            public SPoint spos = new SPoint(); //position on screen
+            public SPoint dir = new SPoint();  //movement direction
+
 
             public int h, w;
+
+            public bool turn = false;
+
             Ellipse pm;
             ImageBrush ib = new ImageBrush();
             int currentFrame;
@@ -69,13 +91,13 @@ namespace kurs
                        
             public CChar(int x, int y)
             {
-                this.x = x;
-                this.y = y;
+                mpos.X = x;
+                mpos.Y = y;
 
                 w = h = 45;
 
-                px = x * w;
-                py = y * h;
+                spos.X = x * w;
+                spos.Y = y * h;
 
                 pm = new Ellipse();
 
@@ -105,141 +127,106 @@ namespace kurs
 
                 pm.Fill = ib;
 
-                pm.RenderTransform = new TranslateTransform(px, py);
+                pm.RenderTransform = new TranslateTransform(spos.X, spos.Y);
                 //pm.Margin = new Thickness(px, py, 0, 0);
             }
 
-            public bool move(int x, int y, Ellipse[,] map2, ref Canvas scene, MediaPlayer player) //PACMAN MOVE
+            public void up()
             {
-                //if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return true;
+                if (dir.X != 0 && dir.Y != -1) turn = true;
 
-                //if (map[x, y] == 1) return true;
+                dir.X = 0;
+                dir.Y = -1;
+            }
 
+            public void down()
+            {
+                if (dir.X != 0 && dir.Y != 1) turn = true;
 
-                if (player.Position == player.NaturalDuration)
+                dir.X = 0;
+                dir.Y = 1;
+            }
+
+            public void left()
+            {
+                if (dir.X != -1 && dir.Y != 0) turn = true;
+
+                dir.X = -1;
+                dir.Y = 0;
+            }
+
+            public void right()
+            {
+                if (dir.X != 1 && dir.Y != 0) turn = true;
+
+                dir.X = 1;
+                dir.Y = 0;
+            }
+
+            void step(int[,] map)
+            {
+                if ((map[mpos.X + dir.X, mpos.Y + dir.Y] == 2) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 0) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 3))
                 {
-                    player.Stop();
-                    player.Play();
+                    mpos = mpos + dir;
                 }
+                else turn = false;
+            }
 
-
-                this.x = x;
-                this.y = y;
-
+            public void animate(int n, int nx, int ny)
+            {
                 var frameCount = 8;
                 var frameW = 65;
                 var frameH = 65;
 
-                if (px > x * w)
-                {
-                    px -= 1;
                     currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 1;
 
-                    player.Play();
+                currentRow = n;
 
-                    var frameLeft = currentFrame * frameW;
+                var frameLeft = currentFrame * frameW;
                     var frameTop = currentRow * frameH;
                     try
                     {
-                        (pm.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop + 10, frameLeft + frameW, frameTop + frameH);
+                        (pm.Fill as ImageBrush).Viewbox = new Rect(frameLeft+nx, frameTop + ny, frameLeft + frameW, frameTop + frameH);
                     }
                     catch (ArgumentException)
                     {
                         MessageBox.Show("Try again");
                     }
-                }
-                if (px < x * w)
-                {
-                    px += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 0;
 
-                    player.Play();
-
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (pm.Fill as ImageBrush).Viewbox = new Rect(frameLeft + 10, frameTop + 10, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-
-                //px = x * w;
-                if (py > y * h)
-                {
-                    py -= 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 2;
-
-                    player.Play();
-
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (pm.Fill as ImageBrush).Viewbox = new Rect(frameLeft + 10, frameTop + 10, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-
-                if (py < y * h)
-                {
-                    py += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 3;
-
-                    player.Play();
-
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (pm.Fill as ImageBrush).Viewbox = new Rect(frameLeft + 10, frameTop + 20, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-
-                //py = y * h;
-
-                pm.RenderTransform = new TranslateTransform(px, py);
-                    if ((px == x * w) && (py == y * h))
-                    {
-                        player.Pause();
-                        scene.Children.Remove(map2[x, y]);
-                        return true;
-                    }
-                    else return false;
             }
 
+            public void updatePos(int[,] map)
+            {
+                if ((mpos.X * w == spos.X) && (mpos.Y * h == spos.Y))
+                {
+                    step(map);
+                }
+
+                if (spos.X < mpos.X * w) { spos.X += 1; animate(0, 10, 10); }
+                if (spos.X > mpos.X * w) { spos.X -= 1; animate(1, 0, 10); }
+                if (spos.Y < mpos.Y * w) { spos.Y += 1; animate(3, 10, 20); }
+                if (spos.Y > mpos.Y * w) { spos.Y -= 1; animate(2, 10, 10); }
+
+
+                pm.RenderTransform = new TranslateTransform(spos.X, spos.Y);
+
+                
+                //turn = false;
+            }
 
             public void addToScene(ref Canvas scene)
-                 {
-                      scene.Children.Add(pm);
-                 }
+            {
+                scene.Children.Add(pm);
             }
+        }
 
         public class Enemy
         {
-            public int x, y;
-            int dx, dy;
-
-            int px, py;
-
+            public SPoint mpos = new SPoint();
+            public SPoint spos = new SPoint();
+            
             int h, w;
+
 
             public Rectangle ghost1;
             ImageBrush ib1 = new ImageBrush();
@@ -249,17 +236,17 @@ namespace kurs
 
             public bool isChasing = false;
 
-            public List<Point> waypoints = new List<Point>();
+            public List<SPoint> waypoints = new List<SPoint>();
                        
-            public Enemy(int x, int y)
+            public Enemy(int x, int y, string iname)
             {
-                this.x = x;
-                this.y = y;
+                mpos.X = x;
+                mpos.Y = y;
 
                 w = h = 45;
 
-                dx = x * w;
-                dy = y * h;
+                spos.X = x * w;
+                spos.Y = y * h;
 
                 ghost1 = new Rectangle();
 
@@ -276,226 +263,210 @@ namespace kurs
 
                 currentFrame = 0;
 
-                    ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
+                    ib1.ImageSource = new BitmapImage(new Uri(iname, UriKind.Absolute));
               
                     ghost1.Fill = ib1;
 
 
-                ghost1.RenderTransform = new TranslateTransform(dx, dy);
+                ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
 
             }
 
-            public bool iSeeYou(int px, int gx, int py, int gy, int[,] map)
+            public bool iSeeYou(SPoint ppos, int[,] map)
             {
-                if ((px == gx))// || (pakman.x == gh.x))
+                if ((ppos.X == mpos.X))// || (pakman.x == gh.x))
                 {
-                    for (int i = Math.Min(py, gy); i < Math.Max(py, gy); i++)
+                    for (int i = Math.Min(ppos.Y, mpos.Y); i < Math.Max(ppos.Y, mpos.Y); i++)
                     {
-                        if (map[px, i] == 1) return false;
+                        if (map[ppos.X, i] == 1) return false;
                     }
                     return true;
                 }
-                if ((py == gy))// || (pakman.x == gh.x))
+                if ((ppos.Y == mpos.Y))// || (pakman.x == gh.x))
                 {
-                    for (int i = Math.Min(px, gx); i < Math.Max(px, gx); i++)
+                    for (int i = Math.Min(ppos.X, mpos.X); i < Math.Max(ppos.X, mpos.X); i++)
                     {
-                        if (map[i, py] == 1) return false;
+                        if (map[i, ppos.Y] == 1) return false;
                     }
                     return true;
                 }
                 return false;
             }
 
-            //public bool mode(int gx, int gy, int px, int py, int[,] map)
+            //public void bonusMode(int x, int y)
             //{
-            //    //if ((((px-gx) <= 3) && ((px-gx)>= -3)) && (((py-gy) <=3) && ((py-gy) >= -3)))
-            //    if (iSeeYou(px, gx, py, gy, map) == true)
+            //    this.x = x;
+            //    this.y = y;
+
+            //        ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh.png", UriKind.Absolute));
+             
+            //        ghost1.Fill = ib1;
+
+            //    var frameCount = 3;
+            //    var frameW = 55;
+            //    var frameH = 55;
+
+            //    if (dx > x * w)
             //    {
-            //        // isChasing = true;
-            //        //преследование
-            //        return true;
+            //        dx -= 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 2;
+
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }
             //    }
-            //    else
+            //    if (dx < x * w)
             //    {
-            //        //рандом
-            //        return false;
+            //        dx += 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 1;
+
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
             //    }
+
+            //    //px = x * w;
+            //    if (dy > y * h)
+            //    {
+            //        dy -= 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 0;
+
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }
+            //    }
+
+            //    if (dy < y * h)
+            //    {
+            //        dy += 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 3;
+
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }                  
+            //    }
+
+            //    //py = y * h;
+
+            //    ghost1.RenderTransform = new TranslateTransform(dx, dy);
+
+            //    if ((dx == x * w) && (dy == y * h)) return;
+                
             //}
 
-            public void bonusMode(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
+            //public bool move(int x, int y)
+            //{
+            //    this.x = x;
+            //    this.y = y;
 
-                    ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh.png", UriKind.Absolute));
-             
-                    ghost1.Fill = ib1;
-
-                var frameCount = 3;
-                var frameW = 55;
-                var frameH = 55;
-
-                if (dx > x * w)
-                {
-                    dx -= 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 2;
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-                if (dx < x * w)
-                {
-                    dx += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 1;
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                }
-
-                //px = x * w;
-                if (dy > y * h)
-                {
-                    dy -= 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 0;
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-
-                if (dy < y * h)
-                {
-                    dy += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 3;
-
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }                  
-                }
-
-                //py = y * h;
-
-                ghost1.RenderTransform = new TranslateTransform(dx, dy);
-
-                if ((dx == x * w) && (dy == y * h)) return;
-                
-            }
-
-            public bool move(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-
-                    ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
+            //        ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
                
-                ghost1.Fill = ib1;
+            //    ghost1.Fill = ib1;
 
-                var frameCount = 3;
-                var frameW = 55;
-                var frameH = 55;
+            //    var frameCount = 3;
+            //    var frameW = 55;
+            //    var frameH = 55;
 
-                if (dx > x * w)
-                {
-                    dx -= 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 2;
+            //    if (dx > x * w)
+            //    {
+            //        dx -= 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 2;
 
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop , frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
-                if (dx < x * w)
-                {
-                    dx += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 1;
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop , frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }
+            //    }
+            //    if (dx < x * w)
+            //    {
+            //        dx += 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 1;
 
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }
+            //    }
 
-                //px = x * w;
-                if (dy > y * h)
-                {
-                    dy -= 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 0;
+            //    //px = x * w;
+            //    if (dy > y * h)
+            //    {
+            //        dy -= 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 0;
 
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                }
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //    }
 
-                if (dy < y * h)
-                {
-                    dy += 1;
-                    currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                    currentRow = 3;
+            //    if (dy < y * h)
+            //    {
+            //        dy += 1;
+            //        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+            //        currentRow = 3;
 
-                    var frameLeft = currentFrame * frameW;
-                    var frameTop = currentRow * frameH;
-                    try
-                    {
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-                    catch (ArgumentException)
-                    {
-                        MessageBox.Show("Try again");
-                    }
-                }
+            //        var frameLeft = currentFrame * frameW;
+            //        var frameTop = currentRow * frameH;
+            //        try
+            //        {
+            //            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+            //        }
+            //        catch (ArgumentException)
+            //        {
+            //            MessageBox.Show("Try again");
+            //        }
+            //    }
 
-                //py = y * h;
+            //    //py = y * h;
 
-                ghost1.RenderTransform = new TranslateTransform(dx, dy);
+            //    ghost1.RenderTransform = new TranslateTransform(dx, dy);
 
-                if ((dx == x * w) && (dy == y * h))               
-                    return true;
+            //    if ((dx == x * w) && (dy == y * h))               
+            //        return true;
                 
-                else return false;
+            //    else return false;
 
-            }  //GHOST MOVE
+            //}  //GHOST MOVE
 
             public void addToScene(ref Canvas scene)
             {
@@ -504,25 +475,113 @@ namespace kurs
 
             public void chase()
             {
+                //dx -> spos.X
+                //dy -> spos.Y
+                //x -> mpos.X
+                //y -> mpos.Y
+
                 if (waypoints.Count > 0)
                 {
                     w = h = 45;
 
-                    double dX = (waypoints[0].X - x);
-                    if (dX != 0)
-                        dX /= Math.Abs(dX);
+                    ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
 
-                    double dY = (waypoints[0].Y - y);
-                    if (dY != 0)
-                        dY /= Math.Abs(dY);
+                    ghost1.Fill = ib1;
 
-                    x += (int)dX;
-                    y += (int)dY;
+                    if ((mpos.X * w == spos.X) && (mpos.Y * h == spos.Y))
+                    {
+                        if (mpos.X == waypoints[0].X && mpos.Y == waypoints[0].Y)
+                            waypoints.RemoveAt(0);
 
-                    ghost1.RenderTransform = new TranslateTransform(x*w, y*h);
+                        if (waypoints.Count == 0) return;
 
-                    if (x == waypoints[0].X && y == waypoints[0].Y)
-                        waypoints.RemoveAt(0);
+                        int dX = (waypoints[0].X - mpos.X);
+
+                        if (dX != 0)
+                            dX /= Math.Abs(dX);
+
+                        int dY = (waypoints[0].Y - mpos.Y);
+
+                        if (dY != 0)
+                            dY /= Math.Abs(dY);
+
+                        mpos.X += dX;
+                        mpos.Y += dY;
+                    }
+
+
+                    var frameCount = 3;
+                    var frameW = 55;
+                    var frameH = 55;
+
+                    if (spos.X > mpos.X * w)
+                    {
+                        spos.X -= 1;
+                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                        currentRow = 2;
+
+                        var frameLeft = currentFrame * frameW;
+                        var frameTop = currentRow * frameH;
+                        try
+                        {
+                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                        }
+                        catch (ArgumentException)
+                        {
+                            MessageBox.Show("Try again");
+                        }
+                    }
+                    if (spos.X < mpos.X * w)
+                    {
+                        spos.X += 1;
+                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                        currentRow = 1;
+
+                        var frameLeft = currentFrame * frameW;
+                        var frameTop = currentRow * frameH;
+                        try
+                        {
+                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                        }
+                        catch (ArgumentException)
+                        {
+                            MessageBox.Show("Try again");
+                        }
+                    }
+
+                    //px = x * w;
+                    if (spos.Y > mpos.Y * h)
+                    {
+                        spos.Y -= 1;
+                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                        currentRow = 0;
+
+                        var frameLeft = currentFrame * frameW;
+                        var frameTop = currentRow * frameH;
+                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                    }
+
+                    if (spos.Y < mpos.Y * h)
+                    {
+                        spos.Y += 1;
+                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+                        currentRow = 3;
+
+                        var frameLeft = currentFrame * frameW;
+                        var frameTop = currentRow * frameH;
+                        try
+                        {
+                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
+                        }
+                        catch (ArgumentException)
+                        {
+                            MessageBox.Show("Try again");
+                        }
+                    }
+
+                    ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
+
+
 
                 } else
                 {
@@ -531,310 +590,149 @@ namespace kurs
             }
         }
 
-        public class GDir
-        {
-            public int x, y;
-            int dx, dy;
-            int d = 1;
-            int xd = 0, yd = 0;
 
-            public GDir(int x,int y)
-            {
-                this.x = x;
-                this.y = y;
-                dx = 1;
-                dy = 1;
-            }
+        //public void randomdir()
+        //{
+        //    int s = new Random().Next(0, 4);
 
-                public void randomdir()
-            {
-                int s = new Random().Next(0, 4);
-                
-                while (((d == 0) && (s == 1)) || ((d == 2) && (s == 3)) || ((d == 1) && (s == 0)) || ((d == 3) && (s == 2)))
-                {
-                    s = new Random().Next(100);
-                    s %= 4;
-                }
+        //    while (((d == 0) && (s == 1)) || ((d == 2) && (s == 3)) || ((d == 1) && (s == 0)) || ((d == 3) && (s == 2)))
+        //    {
+        //        s = new Random().Next(100);
+        //        s %= 4;
+        //    }
 
-                if (s == 0)
-                {
-                    up();
-                    d = s;
+        //    if (s == 0)
+        //    {
+        //        up();
+        //        d = s;
 
-                }
-                if (s == 1)
-                {
-                    down();
-                    d = s;
-                    
-                }
-                if (s == 2)
-                {
-                    left();
-                    d = s;
-                }
-                if (s == 3)
-                {
-                    right();
-                    d = s;
-                }
-            }
+        //    }
+        //    if (s == 1)
+        //    {
+        //        down();
+        //        d = s;
 
-                public void hunt(int px, int py, int gx, int gy, int[,] map)
-                {
-                int x0 = gx - px;
-                int y0 = gy - py;
+        //    }
+        //    if (s == 2)
+        //    {
+        //        left();
+        //        d = s;
+        //    }
+        //    if (s == 3)
+        //    {
+        //        right();
+        //        d = s;
+        //    }
+        //}
 
+        //public class CDir
+        //{
+        //    public int x, y, gx, gy;
+        //    public int ox, oy;
+        //    public int dx, dy;
+        //    public int odx, ody;
 
-                if ((x0 >= 0) && (y0 >= 0))
-                {
-                    if ((map[x + 0, y + (-1)] != 1))
-                    {
-                        up();
-                    }
-                    else
-                    {
-                        if (map[x - 1, y + 0] != 1)
-                        {
-                            left();
-                        }
-                        else
-                        {
-                            if (map[x + 1, y + 0] != 1)
-                            {
-                                down();
-                            }
-                            else
-                            {
-                                right();
-                            }
-                        }
-                    }
-                }
+        //    public CDir(int x, int y)
+        //    {
+        //        this.x = this.ox = x;
+        //        this.y = this.oy = y;
+        //        this.gx = gx;
+        //        this.gy = gy;
+        //        dx = odx = 1; 
+        //        dy = ody = 1;
+        //    }
 
-                if ((x0 <= 0) && (y0 >= 0))
-                {
-                    if (map[x + 0, y + (-1)] != 1)
-                    {
-                        up();
-                    }
-                    else
-                    {
-                        if (map[x + 1, y + 0] != 1)
-                        {
-                            right();
-                        }
-                        else
-                        {
-                            if (map[x + 1, y + 0] != 1)
-                            {
-                                down();
-                            }
-                            else
-                            {
-                                left();
-                            }
-                        }
-                    }
-                }
+        //    public int k(int[,] map, int k)
+        //    {
+        //            if ((map[x, y] == 2) || (map[x, y] == 3))
+        //            {
+        //                k--;
+        //            }                
+        //            return k;                
+        //    }
 
-                if ((x0 >= 0) && (y0 <= 0))
-                {
-                    if (map[x + 0, y + 1] != 1)
-                    {
-                        down();
-                    }
-                    else
-                    {
-                        if (map[x - 1, y + 0] != 1)
-                        {
-                            left();
-                        }
-                        else
-                        {
-                            if (map[x + 0, y + (-1)] != 1)
-                            {
-                                up();
-                            }
-                            else
-                            {
-                                right();
-                            }
-                        }
-                    }
-                }
+        //    public int score(int[,] map, int s)
+        //    {
+        //        if ((map[x+dx, y+dy] == 2))
+        //        {
+        //            s += 10;
+        //        }
 
-                if ((x0 <= 0) && (y0 <= 0))
-                {
-                    if (map[x + 0, y + 1] != 1)
-                    {
-                        down();
-                    }
-                    else
-                    {
-                        if (map[x + 1, y + 0] != 1)
-                        {
-                            right();
-                        }
-                        else
-                        {
-                            if (map[x + 0, y + (-1)] != 1)
-                            {
-                                up();
-                            }
-                            else
-                            {
-                                left();
-                            }
-                        }
-                    }
-                }
+        //        if (map[x+dx,y+dy] == 3)
+        //        {
+        //            s += 20;
+        //        }
+        //        return s;
+        //    }
 
-            }
+        //    public void Update(int[,] map, DispatcherTimer Deathtimer, DispatcherTimer ghTimer)
+        //    {
+        //        if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
+        //           // if ((ox != x)||(oy != y))
+        //            {
+        //                ox = x;
+        //                oy = y;
+        //            }
 
-            public void Update(int[,] map)
-            {
-                if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
+        //        //   if ((dx != 0) || (dy != -1))
+        //        {
 
-                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
-                { 
-                    x = x + dx;
-                    y = y + dy;                    
-                }                      
-            }           
-                public void up()
-                {
-                    dy = -1;
-                    dx = 0;
-                }
+        //        }
 
-                public void down()
-                {
-                    dy = 1;
-                    dx = 0;
-                }
-
-                public void left()
-                {
-                    dx = -1;
-                    dy = 0;
-                }
-
-                public void right()
-                {
-                    dx = 1;
-                    dy = 0;
-                }            
-        }
-
-       
-
-        public class CDir
-        {
-            public int x, y;
-            public int ox, oy;
-            public int dx, dy;
-            public int odx, ody;
-
-            public CDir(int x, int y)
-            {
-                this.x = this.ox = x;
-                this.y = this.oy = y;
-                dx = odx = 1; 
-                dy = ody = 1;
-            }
-
-            public int k(int[,] map, int k)
-            {
-                    if ((map[x, y] == 2) || (map[x, y] == 3))
-                    {
-                        k--;
-                    }                
-                    return k;                
-            }
-
-            public int score(int[,] map, int s)
-            {
-                if ((map[x+dx, y+dy] == 2))
-                {
-                    s += 10;
-                }
-
-                if (map[x+dx, y+dy] == 3)
-                {
-                    s += 20;
-                }
-                return s;
-            }
-
-            public void Update(int[,] map, DispatcherTimer Deathtimer, DispatcherTimer ghTimer)
-            {
-                if ((x + dx < 0) || (x + dx >= map.GetLength(0)) || (y + dy < 0) || (y + dy > map.GetLength(1))) return;
-                   // if ((ox != x)||(oy != y))
-                    {
-                        ox = x;
-                        oy = y;
-                    }
-
-                //   if ((dx != 0) || (dy != -1))
-                {
-
-                }
-
-                if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
-                {
+        //        if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
+        //        {
 
                     
-                    x = x + dx;
-                    y = y + dy;
+        //            x = x + dx;
+        //            y = y + dy;
 
                     
 
-                    if ((map[x, y] == 2))
-                    {
-                        map[x, y] = 0;
+        //            if ((map[x, y] == 2))
+        //            {
+        //                map[x, y] = 0;
 
-                    }
-                    if (map[x, y] == 3)
-                    {
-                        map[x, y] = 0;
-                        ghTimer.Stop();
-                        Deathtimer.Start();
-                    }
-                }
-            }
+        //            }
+        //            if (map[x, y] == 3)
+        //            {
+        //                map[x, y] = 0;
+        //                ghTimer.Stop();
+        //                Deathtimer.Start();
+        //            }
+        //        }
+        //    }
 
-            public void up()
-            {
-                dy = -1;
-                dx = 0;
-            }
+        //    public void up()
+        //    {
+        //        dy = -1;
+        //        dx = 0;
+        //    }
 
-            public void down()
-            {
+        //    public void down()
+        //    {
 
-                dy = 1;
-                dx = 0;
-            }
+        //        dy = 1;
+        //        dx = 0;
+        //    }
 
-            public void left()
-            {
+        //    public void left()
+        //    {
 
-                dx = -1;
-                dy = 0;
-            }
+        //        dx = -1;
+        //        dy = 0;
+        //    }
 
-            public void right()
-            {
-                dx = 1;
-                dy = 0;
-            }
-        }
+        //    public void right()
+        //    {
+        //        dx = 1;
+        //        dy = 0;
+        //    }
+        //}
 
         CChar pakman;
         Enemy gh;
-        CDir dir;
-        GDir gir;
+        Enemy gh2;
+
         int score;
         int i = 0;
         int k = 141;
@@ -902,14 +800,14 @@ namespace kurs
             }
         }
 
-        public bool meet(int[,] map,ref Canvas scene)
-        {
-            if ((pakman.x == gh.x) && (pakman.y == gh.y))
-            {
-                    return true;               
-            }
-            else return false;
-        }
+        //public bool meet(int[,] map,ref Canvas scene)
+        //{
+        //    if ((pakman.x == gh.x) && (pakman.y == gh.y))
+        //    {
+        //            return true;               
+        //    }
+        //    else return false;
+        //}
 
 
         public MainWindow()
@@ -919,7 +817,7 @@ namespace kurs
             player.Play();
             player.Volume = 50.0 / 100.0;
 
-            using (StreamReader outputFile = new StreamReader(@"C:\Users\Mvideo\Desktop\kurs\kurs\score.txt"))
+            using (StreamReader outputFile = new StreamReader(@"C:\ri-89\kurs\score.txt"))
             {
                 string line;
                 while ((line = outputFile.ReadLine()) != null)
@@ -927,166 +825,236 @@ namespace kurs
                     best.Content = line;
                 }
             }
-            
 
+            //juziem
+            //lus0800@mail.ru
             pakman = new CChar(8, 8);
-            dir = new CDir(8, 8);
-
-            gh = new Enemy(9, 7);
-
-            gir = new GDir(8, 5);
-            
-           
+            pakman.up();
+            gh = new Enemy(12, 8, @"pack://application:,,,/image/gh_r (1).png");
+            gh2 = new Enemy(13, 7, @"pack://application:,,,/image/gh_b (1).png");
 
             pmTimer = new System.Windows.Threading.DispatcherTimer();
             pmTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             pmTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
-            ghTimer = new System.Windows.Threading.DispatcherTimer();
-            ghTimer.Tick += new EventHandler(dispatcherGhostTimer_Tick);
-            ghTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
+            //ghTimer = new System.Windows.Threading.DispatcherTimer();
+            //ghTimer.Tick += new EventHandler(dispatcherGhostTimer_Tick);
+            //ghTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
 
-            DeathTimer = new System.Windows.Threading.DispatcherTimer();
-            DeathTimer.Tick += new EventHandler(dispatcherDeathTimer_Tick);
-            DeathTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
+            //DeathTimer = new System.Windows.Threading.DispatcherTimer();
+            //DeathTimer.Tick += new EventHandler(dispatcherDeathTimer_Tick);
+            //DeathTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
 
             
             fillmap2(map, ref Game);
             pakman.addToScene(ref Game);
             gh.addToScene(ref Game);
+            gh2.addToScene(ref Game);
             //meet(map, ref Game);
         }
 
-        private void dispatcherDeathTimer_Tick(object sender, EventArgs e)
-        {
-            if (i != 600)
-            {
-                gir.hunt(dir.x, dir.y, gir.x, gir.y, map);
-                gh.bonusMode(1,1);
-                gir.randomdir();
-                i++;
+        //private void dispatcherDeathTimer_Tick(object sender, EventArgs e)
+        //{
+        //    if (i != 600)
+        //    {
                 
-                gh.isChasing = false;
-                gh.waypoints.Clear();
-                if (meet(map,ref Game) == true)
-                {
-                    //scene.Children.Remove(ghost1);
-                    gh.move(55, 55);
-                    score += 50;
+        //        gh.bonusMode(1,1);
+        //       // gir.randomdir();
+        //        i++;
+                
+        //        gh.isChasing = false;
+        //        gh.waypoints.Clear();
+        //        if (meet(map,ref Game) == true)
+        //        {
+        //            //scene.Children.Remove(ghost1);
+        //            gh.move(55, 55);
+        //            score += 50;
                     
-                    DeathTimer.Stop();
-                    ghTimer.Start();
-                    i = 0;
-                }
-            }
-            else
-            {
-                DeathTimer.Stop();
-                ghTimer.Start();
-                i = 0;
-            }
+        //            DeathTimer.Stop();
+        //            ghTimer.Start();
+        //            i = 0;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        DeathTimer.Stop();
+        //        ghTimer.Start();
+        //        i = 0;
+        //    }
             
-        }
+        //}
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (pakman.move(dir.x, dir.y, map2, ref Game, player) == true)
+
+            pakman.updatePos(map);
+
+            //l1.Content = pakman.turn;
+            if (pakman.turn == true)
             {
-                l1.Content = dir.ox + " "  + dir.oy + " " + gir.x + " " + gir.y;
-                l1.Content += "\n" + gh.waypoints.Count;
-
-                if (gh.iSeeYou(dir.ox, gh.x, dir.oy, gh.y, map) == true)
-                {
-                    gh.isChasing = true;
-                    gh.waypoints.Clear();
-                    gh.waypoints.Add(new Point(dir.ox, dir.oy));
-                }
-
-                if ((pakman.px == dir.x * pakman.w +1) || (pakman.py == dir.y * pakman.h +1)|| (pakman.px == dir.x * pakman.w - 1) || (pakman.py == dir.y * pakman.h - 1))//без этого k начинает обнуляться даже если пакман стоит на месте
-                    k = dir.k(map, k);
-
-                score = dir.score(map, score);
-
-                dir.Update(map, DeathTimer, ghTimer);
-
-                if ( ((dir.x != dir.ox) || (dir.y != dir.oy)) && ((dir.dx != dir.odx) || (dir.dy != dir.ody)) )
-                {
-                    //l1.Content = dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString();
-                    // MessageBox.Show(dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString());
-                    if (gh.isChasing == true)
-                        gh.waypoints.Add(new Point(dir.ox, dir.oy));
-                }
-
-                dir.odx = dir.dx;
-                dir.ody = dir.dy;
-
-                if (k == 0)
-                {
-                    pmTimer.Stop();
-                    ghTimer.Stop();
-                    DeathTimer.Stop();
-
-                    Winner win = new Winner(score);
-
-                    if (win.ShowDialog() == true)
-                    {
-                        string[] array = new string[10];
-                        string name = win.name.Text;
-                        using (StreamWriter outputFile = new StreamWriter(@"C:\Users\Mvideo\Desktop\kurs\kurs\score.txt"))
-                        {
-                            foreach (string score in array)
-                                outputFile.WriteLine(score);
-                        }
-                    }
-                }
+                //MessageBox.Show("turn");
+                if (gh.isChasing == true)
+                    gh.waypoints.Add(pakman.mpos);
+                if (gh2.isChasing == true)
+                    gh2.waypoints.Add(pakman.mpos);
+                pakman.turn = false;
             }
 
-            sc.Content = score;
+            l1.Content = gh.iSeeYou(pakman.mpos, map);
 
-        }
+            //if (gh.waypoints.Count > 0)
+            //{
+            //    l1.Content += "\n" + gh.waypoints[0].X + " " + gh.waypoints[0].Y;
+            //}
+            //l1.Content += "\n" + pakman.mpos.X + " " + pakman.mpos.Y;
+            //l1.Content += "\n" + gh.mpos.X + " " + gh.mpos.Y;
 
-        private void dispatcherGhostTimer_Tick(object sender, EventArgs e)
-        {
-            //l1.Content = gir.x + " " + gir.y;
-            // l1.Content += "\n" + gh.waypoints.Count;
-            if (gh.iSeeYou(dir.ox, gh.x, dir.oy, gh.y, map) == false)
+            if (gh.iSeeYou(pakman.mpos, map) == true)
             {
-                if (gh.move(gir.x, gir.y) == true)
-                {
-                    gir.randomdir();
-                    gir.Update(map);
-                }
+                gh.isChasing = true;
+                gh.waypoints.Clear();
+                gh.waypoints.Add(pakman.mpos);
             }
 
-            if (gh.waypoints.Count > 6)
+            if (gh.waypoints.Count > 2)
             {
                 gh.isChasing = false;
                 gh.waypoints.Clear();
+            }
+
+            if (gh2.iSeeYou(pakman.mpos, map) == true)
+            {
+                gh2.isChasing = true;
+                gh2.waypoints.Clear();
+                gh2.waypoints.Add(pakman.mpos);
+            }
+
+            if (gh2.waypoints.Count > 2)
+            {
+                gh2.isChasing = false;
+                gh2.waypoints.Clear();
+            }
+
+            l1.Content = gh.waypoints.Count;
+
+            if (gh2.isChasing == true)
+            {
+                gh2.chase();
+
             }
 
             if (gh.isChasing == true)
             {
-                gh.chase();
+               gh.chase();
+
             }
+            
 
-            //if (gh.mode(gir.x, gir.y, dir.x, dir.y, map) == false)
-            //{
-            //    if (gh.move(gir.x, gir.y) == true)
+            //    if ( ((dir.x != dir.ox) || (dir.y != dir.oy)) && ((dir.dx != dir.odx) || (dir.dy != dir.ody)) )
             //    {
-            //        gir.randomdir();
-            //        gir.Update(map);
+            //        //l1.Content = dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString();
+            //        // MessageBox.Show(dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString());
+            //        if (gh.isChasing == true)
+            //            gh.waypoints.Add(new Point(dir.ox, dir.oy));
             //    }
 
-            //}
-            //else
+            //if (pakman.move(dir.x, dir.y, map2, ref Game, player) == true)
             //{
-            //    if (gh.move(gir.x, gir.y) == true)
+            //   // l1.Content = dir.ox + " "  + dir.oy + " " + gir.x + " " + gir.y;
+            //    //l1.Content += "\n" + gh.waypoints.Count;
+
+            //    if (gh.iSeeYou(dir.ox, gh.x, dir.oy, gh.y, map) == true)
             //    {
-            //        gir.hunt(dir.x, dir.y, gir.x, gir.y, map);
-            //        gir.Update(map);
+            //        gh.isChasing = true;
+            //        gh.waypoints.Clear();
+            //        gh.waypoints.Add(new Point(dir.ox, dir.oy));
+            //    }
+
+            //    if ((pakman.px == dir.x * pakman.w +1) || (pakman.py == dir.y * pakman.h +1)|| (pakman.px == dir.x * pakman.w - 1) || (pakman.py == dir.y * pakman.h - 1))//без этого k начинает обнуляться даже если пакман стоит на месте
+            //        k = dir.k(map, k);
+
+            //    score = dir.score(map, score);
+
+            //    dir.Update(map, DeathTimer, ghTimer);
+
+            //    if ( ((dir.x != dir.ox) || (dir.y != dir.oy)) && ((dir.dx != dir.odx) || (dir.dy != dir.ody)) )
+            //    {
+            //        //l1.Content = dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString();
+            //        // MessageBox.Show(dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString());
+            //        if (gh.isChasing == true)
+            //            gh.waypoints.Add(new Point(dir.ox, dir.oy));
+            //    }
+
+            //    dir.odx = dir.dx;
+            //    dir.ody = dir.dy;
+
+            //    if (k == 0)
+            //    {
+            //        pmTimer.Stop();
+            //        ghTimer.Stop();
+            //        DeathTimer.Stop();
+
+            //        Winner win = new Winner(score);
+
+            //        if (win.ShowDialog() == true)
+            //        {
+            //            string[] array = new string[10];
+            //            string name = win.name.Text;
+            //            using (StreamWriter outputFile = new StreamWriter(@"C:\ri-89\kurs\score.txt"))
+            //            {
+            //                foreach (string score in array)
+            //                    outputFile.WriteLine(score);
+            //            }
+            //        }
             //    }
             //}
-        }       
+
+            //sc.Content = score;
+
+        }
+
+        //private void dispatcherGhostTimer_Tick(object sender, EventArgs e)
+        //{
+        //    //l1.Content = gir.x + " " + gir.y;
+        //    // l1.Content += "\n" + gh.waypoints.Count;
+        //    if (gh.iSeeYou(dir.ox, gh.x, dir.oy, gh.y, map) == false)
+        //    {
+        //        //if (gh.move(gir.x, gir.y) == true)
+        //        //{
+        //        //    gir.randomdir();
+        //        //    gir.Update(map);
+        //        //}
+        //    }
+
+        //    if (gh.waypoints.Count > 4)
+        //    {
+        //        gh.isChasing = false;
+        //        gh.waypoints.Clear();
+        //    }
+
+        //    if (gh.isChasing == true)
+        //    {
+        //        gh.chase();
+        //    }
+
+        //    //if (gh.mode(gir.x, gir.y, dir.x, dir.y, map) == false)
+        //    //{
+        //    //    if (gh.move(gir.x, gir.y) == true)
+        //    //    {
+        //    //        gir.randomdir();
+        //    //        gir.Update(map);
+        //    //    }
+
+        //    //}
+        //    //else
+        //    //{
+        //    //    if (gh.move(gir.x, gir.y) == true)
+        //    //    {
+        //    //        gir.hunt(dir.x, dir.y, gir.x, gir.y, map);
+        //    //        gir.Update(map);
+        //    //    }
+        //    //}
+        //}       
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
@@ -1096,7 +1064,7 @@ namespace kurs
             player.Open(new Uri("C:\\Users\\Mvideo\\Desktop\\kurs-master\\kurs-master\\kurs\\kurs\\sounds\\Body.mp3", UriKind.Relative));
 
             pmTimer.Start();
-            ghTimer.Start();
+            //ghTimer.Start();
         }
 
         private void Start_MouseEnter(object sender, MouseEventArgs e)
@@ -1107,16 +1075,25 @@ namespace kurs
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+
+            if (e.Key == Key.Left) pakman.left();
+            //else
+            if (e.Key == Key.Right) pakman.right();
+            //else          
+            if (e.Key == Key.Down) pakman.down();
+            //else
+            if (e.Key == Key.Up) pakman.up();
+
             //try
             //{
 
-            if (e.Key == Key.Left) dir.left();
-            //else
-            if (e.Key == Key.Right) dir.right();
-            //else          
-            if (e.Key == Key.Down) dir.down();
-            //else
-            if (e.Key == Key.Up) dir.up();
+            //if (e.Key == Key.Left) dir.left();
+            ////else
+            //if (e.Key == Key.Right) dir.right();
+            ////else          
+            //if (e.Key == Key.Down) dir.down();
+            ////else
+            //if (e.Key == Key.Up) dir.up();
 
             //if (e.Key == Key.Escape) ;
             //}

@@ -9,31 +9,31 @@
     <Grid>
         <Grid x:Name="menu" HorizontalAlignment="Left" Height="720" Margin="0,0,0,0" VerticalAlignment="Top" Width="900">
             <Grid.Background>
-                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\menu_bg.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\menu_bg.png"/>
             </Grid.Background>
             <Label x:Name="best" Height="37" Canvas.Left="10" Foreground="#FFFFFFFF" FontFamily="Wide Latin" FontSize="24" Margin="92,36,138,647">
                 <Label Height="37" Width="490"/>
             </Label>
             <Button x:Name="start" HorizontalAlignment="Left" Height="86" Margin="256,359,0,0" VerticalAlignment="Top" Width="387" Click="Start_Click" BorderBrush="Black" MouseEnter="Start_MouseEnter" Background="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}">
-                <Image Source="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\bt_start.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
+                <Image Source="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\bt_start.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
             </Button>
             <Button x:Name="cr" Height="84" Margin="256,482,0,0" VerticalAlignment="Top" BorderBrush="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}" HorizontalAlignment="Left" Width="387" Click="cr_Click">
                 <Button.Background>
                     <ImageBrush/>
                 </Button.Background>
-                <Image Source="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\bt_rd.png" Width="387"/>
+                <Image Source="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\bt_rd.png" Width="387"/>
 
             </Button>
             <Button x:Name="exit" HorizontalAlignment="Left" Height="81" Margin="256,598,0,0" VerticalAlignment="Top" Width="387" BorderBrush="Black" Style="{DynamicResource myStyleIsAdongDigiDigi}" Click="Exit_Click">
                 <Button.Background>
                     <ImageBrush/>
                 </Button.Background>
-                <Image Source="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\bt_ex.png" Width="346"/>
+                <Image Source="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\bt_ex.png" Width="346"/>
             </Button>
         </Grid>
         <Canvas x:Name="Game" HorizontalAlignment="Left" Height="720" Margin="0,0,0,0" VerticalAlignment="Top" Width="900" Visibility="Hidden">
             <Canvas.Background>
-                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\maze.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\maze.png"/>
             </Canvas.Background>
             <Label x:Name="sc" Height="37" Canvas.Left="10" Width="180" Foreground="#FFD71B73" FontFamily="Wide Latin" FontSize="24">
                 <Label Content="Label" Height="37" Width="490"/>
@@ -41,17 +41,17 @@
             <Canvas Height="720" Width="900">
                 <Canvas Height="100" Canvas.Left="162" Canvas.Top="420" Width="100"/>
             </Canvas>
-            <Label x:Name="l1" Content="Label" Height="51" Canvas.Left="784" Canvas.Top="10" Width="106" Background="#FFF3D6D6"/>
+            <Label x:Name="l1" Content="Label" Height="151" Canvas.Left="784" Canvas.Top="10" Width="106" Background="#FFF3D6D6"/>
         </Canvas>
         <Grid x:Name="creat" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="900" Visibility="Hidden">
             <Grid.Background>
-                <ImageBrush ImageSource="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\creat_bg.png"/>
+                <ImageBrush ImageSource="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\creat_bg.png"/>
             </Grid.Background>
             <Button x:Name="menu1" HorizontalAlignment="Left" Height="80" Margin="56,596,0,0" VerticalAlignment="Top" Width="346" Background="Black" BorderBrush="Black" Foreground="Black" OpacityMask="Black" Click="menu1_Click">
-                <Image Source="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\bt_menu.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
+                <Image Source="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\bt_menu.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
             </Button>
             <Button x:Name="ex1" HorizontalAlignment="Left" Height="80" Margin="510,596,0,0" VerticalAlignment="Top" Width="346" Background="Black" BorderBrush="Black" Foreground="Black" OpacityMask="Black" Click="ex1_Click">
-                <Image Source="C:\Users\Mvideo\Desktop\kurs\kurs\kurs\image\bt_ex.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
+                <Image Source="C:\Users\Admin\Desktop\kursPM-master\kursPM-master\kurs\image\bt_ex.png" Width="387" Style="{DynamicResource GangnamStyle}"/>
             </Button>
         </Grid>
 
