@@ -29,7 +29,7 @@ namespace kurs
             int m;
             InitializeComponent();
             string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\Mvideo\Desktop\kurs\kurs\score.txt");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\Mvideo\Desktop\kursPM\kursPM\score.txt");
             //while((line = file.ReadLine()) != null)
             //{
             //    int res = Int32.Parse(line);

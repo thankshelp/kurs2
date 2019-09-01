@@ -112,3 +112,41 @@ C:\ri-89\kurs\kurs\obj\Debug\kurs.g.resources
 C:\ri-89\kurs\kurs\obj\Debug\kurs.csproj.CoreCompileInputs.cache
 C:\ri-89\kurs\kurs\obj\Debug\kurs.exe
 C:\ri-89\kurs\kurs\obj\Debug\kurs.pdb
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\bin\Debug\kurs.exe.config
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\bin\Debug\kurs.exe
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\bin\Debug\kurs.pdb
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs.csprojResolveAssemblyReference.cache
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\GO.g.cs
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\MainWindow.g.cs
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\Winner.g.cs
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\App.g.cs
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs_Content.g.cs
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs_MarkupCompile.cache
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs_MarkupCompile.lref
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\App.baml
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\GO.baml
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\MainWindow.baml
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\Winner.baml
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs.g.resources
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs.csproj.CoreCompileInputs.cache
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs.exe
+C:\Users\Вера\Downloads\Новая папка (2)\kursPM\kurs\obj\Debug\kurs.pdb
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\bin\Debug\kurs.exe.config
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\bin\Debug\kurs.exe
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\bin\Debug\kurs.pdb
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs.csprojAssemblyReference.cache
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\GO.g.cs
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\MainWindow.g.cs
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\Winner.g.cs
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\App.g.cs
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs_Content.g.cs
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs_MarkupCompile.cache
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs_MarkupCompile.lref
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\App.baml
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\GO.baml
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\MainWindow.baml
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\Winner.baml
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs.g.resources
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs.csproj.CoreCompileInputs.cache
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs.exe
+C:\Users\Mvideo\Desktop\kursPM\kursPM\kurs\obj\Debug\kurs.pdb

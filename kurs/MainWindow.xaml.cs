@@ -79,9 +79,8 @@ namespace kurs
             public SPoint spos = new SPoint(); //position on screen
             public SPoint dir = new SPoint();  //movement direction
 
-
             public int h, w;
-
+            public int s;
             public bool turn = false;
 
             Ellipse pm;
@@ -95,6 +94,7 @@ namespace kurs
                 mpos.Y = y;
 
                 w = h = 45;
+                
 
                 spos.X = x * w;
                 spos.Y = y * h;
@@ -163,11 +163,23 @@ namespace kurs
                 dir.Y = 0;
             }
 
-            void step(int[,] map)
+            void step(int[,] map, Ellipse[,] map2, ref Canvas scene)
             {
                 if ((map[mpos.X + dir.X, mpos.Y + dir.Y] == 2) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 0) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 3))
                 {
                     mpos = mpos + dir;
+                    if ((map[mpos.X, mpos.Y] == 2))
+                    {
+                        s += 10;
+                        map[mpos.X, mpos.Y] = 0;
+                        scene.Children.Remove(map2[spos.X/45, spos.Y/45]);
+                    }
+                    if (map[mpos.X, mpos.Y] == 3)
+                    {
+                        s += 20;
+                        map[mpos.X, mpos.Y] = 0;
+                        scene.Children.Remove(map2[spos.X / 45, spos.Y / 45]);
+                    }
                 }
                 else turn = false;
             }
@@ -195,11 +207,12 @@ namespace kurs
 
             }
 
-            public void updatePos(int[,] map)
+            public void updatePos(int[,] map, Ellipse[,] map2, ref Canvas scene)
             {
                 if ((mpos.X * w == spos.X) && (mpos.Y * h == spos.Y))
                 {
-                    step(map);
+                    step(map, map2, ref scene);
+                    
                 }
 
                 if (spos.X < mpos.X * w) { spos.X += 1; animate(0, 10, 10); }
@@ -224,9 +237,12 @@ namespace kurs
         {
             public SPoint mpos = new SPoint();
             public SPoint spos = new SPoint();
-            
-            int h, w;
+            public SPoint dir = new SPoint();
 
+            int h, w;
+            int d = 1;
+
+            public bool turn = false;
 
             public Rectangle ghost1;
             ImageBrush ib1 = new ImageBrush();
@@ -293,13 +309,146 @@ namespace kurs
                 return false;
             }
 
+            //public void up()
+            //{
+            //    if (dir.X != 0 && dir.Y != -1) turn = true;
+
+            //    dir.X = 0;
+            //    dir.Y = -1;
+            //}
+
+            //public void down()
+            //{
+            //    if (dir.X != 0 && dir.Y != 1) turn = true;
+
+            //    dir.X = 0;
+            //    dir.Y = 1;
+            //}
+
+            //public void left()
+            //{
+            //    if (dir.X != -1 && dir.Y != 0) turn = true;
+
+            //    dir.X = -1;
+            //    dir.Y = 0;
+            //}
+
+            //public void right()
+            //{
+            //    if (dir.X != 1 && dir.Y != 0) turn = true;
+
+            //    dir.X = 1;
+            //    dir.Y = 0;
+            //}
+
+            public void randomdir()
+            {
+                int s = new Random().Next(0, 4);
+
+                while (((d == 0) && (s == 1)) || ((d == 2) && (s == 3)) || ((d == 1) && (s == 0)) || ((d == 3) && (s == 2)))
+                {
+                    s = new Random().Next(100);
+                    s %= 4;
+                }
+
+                if (s == 0)
+                {
+                    if (dir.X != 0 && dir.Y != -1) turn = true;
+
+                    dir.X = 0;
+                    dir.Y = -1;
+
+                    d = s;
+
+                }
+                if (s == 1)
+                {
+                    if (dir.X != 0 && dir.Y != 1) turn = true;
+
+                    dir.X = 0;
+                    dir.Y = 1;
+
+                    d = s;
+
+                }
+                if (s == 2)
+                {
+                    if (dir.X != -1 && dir.Y != 0) turn = true;
+
+                    dir.X = -1;
+                    dir.Y = 0;
+
+                    d = s;
+                }
+                if (s == 3)
+                {
+                    if (dir.X != 1 && dir.Y != 0) turn = true;
+
+                    dir.X = 1;
+                    dir.Y = 0;
+
+                    d = s;
+                }
+            }        
+
+            void step(int[,] map)
+            {
+                if ((map[mpos.X + dir.X, mpos.Y + dir.Y] == 2) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 0) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 3))
+                {
+                    mpos += dir;                   
+                }
+                else turn = false;
+            }
+
+            public void animate(int n, int nx, int ny)
+            {
+                var frameCount = 8;
+                var frameW = 45;
+                var frameH = 50;
+
+                currentFrame = (currentFrame + 1 + frameCount) % frameCount;
+
+                currentRow = n;
+
+                var frameLeft = currentFrame * frameW;
+                var frameTop = currentRow * frameH;
+                try
+                {
+                    (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft + nx, frameTop + ny, frameLeft + frameW, frameTop + frameH);
+                }
+                catch (ArgumentException)
+                {
+                    MessageBox.Show("Try again");
+                }
+
+            }
+
+            public void updatePos(int[,] map, Ellipse[,] map2, ref Canvas scene)
+            {
+                if ((mpos.X * w == spos.X) && (mpos.Y * h == spos.Y))
+                {
+                    step(map);
+                }
+
+                if (spos.X < mpos.X * w) { spos.X += 1; animate(0, 10, 10); }
+                if (spos.X > mpos.X * w) { spos.X -= 1; animate(1, 0, 10); }
+                if (spos.Y < mpos.Y * w) { spos.Y += 1; animate(3, 10, 20); }
+                if (spos.Y > mpos.Y * w) { spos.Y -= 1; animate(2, 10, 10); }
+
+
+                ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
+
+
+                //turn = false;
+            }
+
             //public void bonusMode(int x, int y)
             //{
             //    this.x = x;
             //    this.y = y;
 
             //        ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh.png", UriKind.Absolute));
-             
+
             //        ghost1.Fill = ib1;
 
             //    var frameCount = 3;
@@ -376,7 +525,7 @@ namespace kurs
             //    ghost1.RenderTransform = new TranslateTransform(dx, dy);
 
             //    if ((dx == x * w) && (dy == y * h)) return;
-                
+
             //}
 
             //public bool move(int x, int y)
@@ -385,7 +534,7 @@ namespace kurs
             //    this.y = y;
 
             //        ib1.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/image/gh_r (1).png", UriKind.Absolute));
-               
+
             //    ghost1.Fill = ib1;
 
             //    var frameCount = 3;
@@ -463,7 +612,7 @@ namespace kurs
 
             //    if ((dx == x * w) && (dy == y * h))               
             //        return true;
-                
+
             //    else return false;
 
             //}  //GHOST MOVE
@@ -587,7 +736,7 @@ namespace kurs
                 {
                     isChasing = false;
                 }
-            }
+            }            
         }
 
 
@@ -651,19 +800,7 @@ namespace kurs
         //            return k;                
         //    }
 
-        //    public int score(int[,] map, int s)
-        //    {
-        //        if ((map[x+dx, y+dy] == 2))
-        //        {
-        //            s += 10;
-        //        }
-
-        //        if (map[x+dx,y+dy] == 3)
-        //        {
-        //            s += 20;
-        //        }
-        //        return s;
-        //    }
+        
 
         //    public void Update(int[,] map, DispatcherTimer Deathtimer, DispatcherTimer ghTimer)
         //    {
@@ -682,11 +819,11 @@ namespace kurs
         //        if ((map[x + dx, y + dy] == 2) || (map[x + dx, y + dy] == 0) || (map[x + dx, y + dy] == 3))
         //        {
 
-                    
+
         //            x = x + dx;
         //            y = y + dy;
 
-                    
+
 
         //            if ((map[x, y] == 2))
         //            {
@@ -737,8 +874,7 @@ namespace kurs
         int i = 0;
         int k = 141;
         System.Windows.Threading.DispatcherTimer pmTimer;
-        System.Windows.Threading.DispatcherTimer ghTimer;
-        System.Windows.Threading.DispatcherTimer DeathTimer;
+       
 
         //16x20
 
@@ -759,7 +895,11 @@ namespace kurs
         //{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
         //{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }; 
 
-
+        //    void delpos(SPoint x, SPoint y, ref Canvas scene)
+        //{
+        //    int x1 = int.Parse(SPoint x);
+        //    scene.Children.Remove();
+        //}
 
         void fillmap2(int[,] map, ref Canvas scene)
         {
@@ -797,6 +937,7 @@ namespace kurs
                     }
                     else map2[i, j] = null;
                 }
+                
             }
         }
 
@@ -816,8 +957,9 @@ namespace kurs
             player.Open(new Uri("C:\\Users\\Mvideo\\Desktop\\kurs-master\\kurs-master\\kurs\\kurs\\sounds\\8-Bit Universe - Our House (8-Bit Version) (8-Bit Version).mp3", UriKind.Relative));
             player.Play();
             player.Volume = 50.0 / 100.0;
+            
 
-            using (StreamReader outputFile = new StreamReader(@"C:\ri-89\kurs\score.txt"))
+            using (StreamReader outputFile = new StreamReader(@"C:\Users\Mvideo\Desktop\kursPM\kursPM\score.txt"))
             {
                 string line;
                 while ((line = outputFile.ReadLine()) != null)
@@ -825,10 +967,8 @@ namespace kurs
                     best.Content = line;
                 }
             }
-
-            //juziem
-            //lus0800@mail.ru
-            pakman = new CChar(8, 8);
+            
+            pakman = new CChar(1, 1);
             pakman.up();
             gh = new Enemy(12, 8, @"pack://application:,,,/image/gh_r (1).png");
             gh2 = new Enemy(13, 7, @"pack://application:,,,/image/gh_b (1).png");
@@ -850,6 +990,8 @@ namespace kurs
             pakman.addToScene(ref Game);
             gh.addToScene(ref Game);
             gh2.addToScene(ref Game);
+            
+
             //meet(map, ref Game);
         }
 
@@ -857,19 +999,19 @@ namespace kurs
         //{
         //    if (i != 600)
         //    {
-                
-        //        gh.bonusMode(1,1);
-        //       // gir.randomdir();
+
+        //        gh.bonusMode(1, 1);
+        //        // gir.randomdir();
         //        i++;
-                
+
         //        gh.isChasing = false;
         //        gh.waypoints.Clear();
-        //        if (meet(map,ref Game) == true)
+        //        if (meet(map, ref Game) == true)
         //        {
         //            //scene.Children.Remove(ghost1);
         //            gh.move(55, 55);
         //            score += 50;
-                    
+
         //            DeathTimer.Stop();
         //            ghTimer.Start();
         //            i = 0;
@@ -881,13 +1023,16 @@ namespace kurs
         //        ghTimer.Start();
         //        i = 0;
         //    }
-            
+
         //}
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-
-            pakman.updatePos(map);
+            pakman.updatePos(map, map2, ref Game);    
+            score = pakman.s;
+          
+            gh.updatePos(map, map2, ref Game);
+            gh2.updatePos(map, map2, ref Game);
 
             //l1.Content = pakman.turn;
             if (pakman.turn == true)
@@ -915,6 +1060,10 @@ namespace kurs
                 gh.waypoints.Clear();
                 gh.waypoints.Add(pakman.mpos);
             }
+            else
+            {
+                gh.randomdir();                              
+            }
 
             if (gh.waypoints.Count > 2)
             {
@@ -927,6 +1076,10 @@ namespace kurs
                 gh2.isChasing = true;
                 gh2.waypoints.Clear();
                 gh2.waypoints.Add(pakman.mpos);
+            }
+            else
+            {
+                gh2.randomdir();                              
             }
 
             if (gh2.waypoints.Count > 2)
@@ -946,10 +1099,16 @@ namespace kurs
             if (gh.isChasing == true)
             {
                gh.chase();
-
             }
-            
 
+            if (gh.mpos==pakman.mpos)
+            {
+                if (go.ShowDialog() == true) return;
+            }
+                
+            sc.Content = score;
+
+            
             //    if ( ((dir.x != dir.ox) || (dir.y != dir.oy)) && ((dir.dx != dir.odx) || (dir.dy != dir.ody)) )
             //    {
             //        //l1.Content = dir.x.ToString() + " " + dir.y.ToString() + " " + dir.ox.ToString() + " " + dir.oy.ToString() + "\n" + dir.dx.ToString() + " " + dir.dy.ToString() + " " + dir.odx.ToString() + " " + dir.ody.ToString();
