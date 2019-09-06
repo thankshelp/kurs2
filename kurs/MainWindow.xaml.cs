@@ -82,6 +82,7 @@ namespace kurs
             public int h, w;
             public int s;
             public bool turn = false;
+            public bool bonus = false;
 
             Ellipse pm;
             ImageBrush ib = new ImageBrush();
@@ -158,26 +159,23 @@ namespace kurs
                 dir.Y = 0;
             }
 
-            void step(int[,] map, Ellipse[,] map2, ref Canvas scene, bool bonus)
+            void step(int[,] map, Ellipse[,] map2, ref Canvas scene)
             {
                 if ((map[mpos.X + dir.X, mpos.Y + dir.Y] == 2) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 0) || (map[mpos.X + dir.X, mpos.Y + dir.Y] == 3))
                 {
-                    if (map[mpos.X, mpos.Y] == 0) bonus = false;
-
-                        if ((map[mpos.X, mpos.Y] == 2))
+                    if ((map[mpos.X, mpos.Y] == 2))
                     {
                         s += 10;
                         map[mpos.X, mpos.Y] = 0;
                         scene.Children.Remove(map2[spos.X/45, spos.Y/45]);
-                        bonus = false;
                     }
                     if (map[mpos.X, mpos.Y] == 3)
                     {
                         s += 20;
-                        bonus = true;
                         map[mpos.X, mpos.Y] = 0;
                         scene.Children.Remove(map2[spos.X / 45, spos.Y / 45]);
-                    }
+                        bonus = true;
+                    } 
                     mpos = mpos + dir;
                 }
                 else turn = false;
@@ -206,11 +204,11 @@ namespace kurs
 
             }
 
-            public void updatePos(int[,] map, Ellipse[,] map2, ref Canvas scene, bool bonus)
+            public void updatePos(int[,] map, Ellipse[,] map2, ref Canvas scene)
             {
                 if ((mpos.X * w == spos.X) && (mpos.Y * h == spos.Y))
                 {
-                    step(map, map2, ref scene, bonus);
+                    step(map, map2, ref scene);
                     
                 }
 
@@ -336,10 +334,10 @@ namespace kurs
             public void randomdir()
             {
                 int s = new Random().Next(0, 4);
-
+               
                 while (((d == 0) && (s == 1)) || ((d == 2) && (s == 3)) || ((d == 1) && (s == 0)) || ((d == 3) && (s == 2)))
                 {
-                    s = new Random().Next(1000);
+                    s = new Random().Next(100);
                     s %= 4;
                 }
 
@@ -473,75 +471,10 @@ namespace kurs
                         mpos.Y += dY;
                     }
 
-
-                    var frameCount = 3;
-                    var frameW = 55;
-                    var frameH = 55;
-
-                    if (spos.X > mpos.X * w)
-                    {
-                        spos.X -= 1;
-                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                        currentRow = 2;
-
-                        var frameLeft = currentFrame * frameW;
-                        var frameTop = currentRow * frameH;
-                        try
-                        {
-                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                        }
-                        catch (ArgumentException)
-                        {
-                            MessageBox.Show("Try again");
-                        }
-                    }
-                    if (spos.X < mpos.X * w)
-                    {
-                        spos.X += 1;
-                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                        currentRow = 1;
-
-                        var frameLeft = currentFrame * frameW;
-                        var frameTop = currentRow * frameH;
-                        try
-                        {
-                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                        }
-                        catch (ArgumentException)
-                        {
-                            MessageBox.Show("Try again");
-                        }
-                    }
-
-                    //px = x * w;
-                    if (spos.Y > mpos.Y * h)
-                    {
-                        spos.Y -= 1;
-                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                        currentRow = 0;
-
-                        var frameLeft = currentFrame * frameW;
-                        var frameTop = currentRow * frameH;
-                        (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                    }
-
-                    if (spos.Y < mpos.Y * h)
-                    {
-                        spos.Y += 1;
-                        currentFrame = (currentFrame + 1 + frameCount) % frameCount;
-                        currentRow = 3;
-
-                        var frameLeft = currentFrame * frameW;
-                        var frameTop = currentRow * frameH;
-                        try
-                        {
-                            (ghost1.Fill as ImageBrush).Viewbox = new Rect(frameLeft, frameTop, frameLeft + frameW, frameTop + frameH);
-                        }
-                        catch (ArgumentException)
-                        {
-                            MessageBox.Show("Try again");
-                        }
-                    }
+                    if (spos.X > mpos.X * w){spos.X -= 1; animate(2);}
+                    if (spos.X < mpos.X * w){spos.X += 1; animate(1);}
+                    if (spos.Y > mpos.Y * h){spos.Y -= 1; animate(0);}
+                    if (spos.Y < mpos.Y * h) {spos.Y += 1; animate(3);}
 
                     ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
 
@@ -562,7 +495,7 @@ namespace kurs
         int score;
         int i = 0;
         int k = 141;
-        bool bonus;
+        
         System.Windows.Threading.DispatcherTimer pmTimer;
        
 
@@ -640,7 +573,7 @@ namespace kurs
             player.Volume = 50.0 / 100.0;
 
 
-            using (StreamReader outputFile = new StreamReader(@"C:\Users\Mvideo\Desktop\kursPM\kursPM\score.txt"))
+            using (StreamReader outputFile = new StreamReader(@"D:\Программирование\kurs\score.txt"))
             {
                 string line;
                 while ((line = outputFile.ReadLine()) != null)
@@ -668,19 +601,20 @@ namespace kurs
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            pakman.updatePos(map, map2, ref Game, bonus);    
+            pakman.updatePos(map, map2, ref Game);    
             score = pakman.s;
-            l1.Content = bonus;
+            l1.Content = pakman.bonus;
             
-            if (bonus == true)
+            if (pakman.bonus == true)
             {
                 while (i < 600)
                 {
                     gh.bonusmode(1,1);
-                    gh2.bonusmode(15,19);
+                    gh2.bonusmode(18,14);
                     i += 1;
                 }
                 i = 0;
+                pakman.bonus = false;
             }
             else
             {
