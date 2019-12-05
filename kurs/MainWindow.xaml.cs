@@ -303,26 +303,49 @@ namespace kurs
                 return false;
             }
 
-            public void bonusmode(int x, int y)
+            public void bonusmode(int x, int y, int[,] map)
             {
                 mpos.X = x;
                 mpos.Y = y;
 
                 if (spos.X > mpos.X * w)
                 {
-                    spos.X -= 1;
+                    if (spos.X % w != 0)
+                    {
+                        spos.X -= 1;
+                    }
+                    else
+                    {
+                        if (map[(spos.X - 1) / w, spos.Y / h] != 1) spos.X -= 1;
+                    }
+
                 }
                 if (spos.X < mpos.X * w)
                 {
-                    spos.X += 1;
+                    if ((spos.X + 1 % w == 0) && (map[(spos.X + 1)/w, spos.Y/h] != 1))
+                    {
+                        spos.X += 1;
+                    }
                 }
-                if (spos.Y > mpos.Y * h)
+
+                if (spos.Y > mpos.Y * h) 
                 {
-                    spos.Y -= 1;
+                    if (spos.Y % h != 0)
+                    {
+                        spos.Y -= 1;
+                    }
+                    else
+                    {
+                        if (map[spos.X / w, (spos.Y - 1) / h] != 1) spos.Y -= 1;
+                    }
                 }
                 if (spos.Y < mpos.Y * h)
                 {
-                    spos.Y += 1;
+                    if ((spos.Y + 1 % w == 0) && (map[spos.X / w, (spos.Y + 1) / h] != 1))
+                    {
+                        spos.Y += 1;
+                    }
+
                 }
 
                 ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
@@ -471,10 +494,10 @@ namespace kurs
                         mpos.Y += dY;
                     }
 
-                    if (spos.X > mpos.X * w){spos.X -= 1; animate(2);}
-                    if (spos.X < mpos.X * w){spos.X += 1; animate(1);}
-                    if (spos.Y > mpos.Y * h){spos.Y -= 1; animate(0);}
-                    if (spos.Y < mpos.Y * h) {spos.Y += 1; animate(3);}
+                    if (spos.X > mpos.X * w){spos.X -= 0; animate(2);}
+                    if (spos.X < mpos.X * w){spos.X += 0; animate(1);}
+                    if (spos.Y > mpos.Y * h){spos.Y -= 0; animate(0);}
+                    if (spos.Y < mpos.Y * h) {spos.Y += 0; animate(3);}
 
                     ghost1.RenderTransform = new TranslateTransform(spos.X, spos.Y);
 
@@ -568,12 +591,12 @@ namespace kurs
         public MainWindow()
         {
             InitializeComponent();
-            player.Open(new Uri("C:\\Users\\Mvideo\\Desktop\\kurs-master\\kurs-master\\kurs\\kurs\\sounds\\8-Bit Universe - Our House (8-Bit Version) (8-Bit Version).mp3", UriKind.Relative));
+            player.Open(new Uri("C:\\Users\\Виктория\\Desktop\\beskonechnoe_zuquemi\\kurs\\sounds\\8-Bit Universe - Our House (8-Bit Version) (8-Bit Version).mp3", UriKind.Relative));
             player.Play();
             player.Volume = 50.0 / 100.0;
 
 
-            using (StreamReader outputFile = new StreamReader(@"D:\Программирование\kurs\score.txt"))
+            using (StreamReader outputFile = new StreamReader(@"C:\Users\Виктория\Desktop\beskonechnoe_zuquemi\score.txt"))
             {
                 string line;
                 while ((line = outputFile.ReadLine()) != null)
@@ -607,19 +630,48 @@ namespace kurs
             
             if (pakman.bonus == true)
             {
-                while (i < 600)
+
+                if (i < 600)
                 {
-                    gh.bonusmode(1,1);
-                    gh2.bonusmode(18,14);
-                    i += 1;
+                    pakman.bonus = true;
+                    gh.bonusmode(1, 1, map);
+                    gh2.bonusmode(18, 14, map);
+                    i++;
+                    l1.Content = i;
                 }
-                i = 0;
-                pakman.bonus = false;
+                else
+                {
+                    i = 0;
+                    pakman.bonus = false;
+                }
             }
             else
             {
                 gh.updatePos(map, map2, ref Game);
                 gh2.updatePos(map, map2, ref Game);
+
+                if (gh.iSeeYou(pakman.mpos, map) == true)
+                {
+                    gh.isChasing = true;
+                    gh.waypoints.Clear();
+                    gh.waypoints.Add(pakman.mpos);
+                }
+                else
+                {
+                    gh.randomdir();
+                }
+
+
+                if (gh2.iSeeYou(pakman.mpos, map) == true)
+                {
+                    gh2.isChasing = true;
+                    gh2.waypoints.Clear();
+                    gh2.waypoints.Add(pakman.mpos);
+                }
+                else
+                {
+                    gh2.randomdir();
+                }
             }
 
            
@@ -635,37 +687,14 @@ namespace kurs
 
         //    l1.Content = gh.iSeeYou(pakman.mpos, map);
 
-           
-
-            if (gh.iSeeYou(pakman.mpos, map) == true)
-            {
-                gh.isChasing = true;
-                gh.waypoints.Clear();
-                gh.waypoints.Add(pakman.mpos);
-            }
-            else
-            {
-                gh.randomdir();                              
-            }
-
-            if (gh.waypoints.Count > 2)
+            if (gh.waypoints.Count >= 2)
             {
                 gh.isChasing = false;
                 gh.waypoints.Clear();
             }
 
-            if (gh2.iSeeYou(pakman.mpos, map) == true)
-            {
-                gh2.isChasing = true;
-                gh2.waypoints.Clear();
-                gh2.waypoints.Add(pakman.mpos);
-            }
-            else
-            {
-                gh2.randomdir();                              
-            }
 
-            if (gh2.waypoints.Count > 2)
+            if (gh2.waypoints.Count >= 2)
             {
                 gh2.isChasing = false;
                 gh2.waypoints.Clear();
@@ -673,13 +702,13 @@ namespace kurs
 
          //   l1.Content = gh.waypoints.Count;
 
-            if (gh2.isChasing == true)
-            {
+            if ((gh2.isChasing == true) && (pakman.bonus != true))
+            {  
                 gh2.chase();
 
             }
 
-            if (gh.isChasing == true)
+            if ((gh.isChasing == true) && (pakman.bonus != true))
             {
                gh.chase();
             }
@@ -712,8 +741,8 @@ namespace kurs
             player.Stop();
             menu.Visibility = Visibility.Hidden;
             Game.Visibility = Visibility.Visible;
-            player.Open(new Uri("C:\\Users\\Mvideo\\Desktop\\kurs-master\\kurs-master\\kurs\\kurs\\sounds\\Body.mp3", UriKind.Relative));
-
+            player.Open(new Uri("C:\\Users\\Виктория\\Desktop\\beskonechnoe_zuquemi\\kurs\\sounds\\Body.mp3", UriKind.Relative));
+            
             pmTimer.Start();
            
         }

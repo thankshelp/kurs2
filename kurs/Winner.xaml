@@ -8,7 +8,7 @@
         Title="Winner" Height="530.5" Width="411.5" Background="{x:Null}">
     <Grid Margin="0,0,2,5" Height="494" VerticalAlignment="Bottom" Width="400">
         <Grid.Background>
-            <ImageBrush ImageSource="D:\Программирование\kurs\kurs\image\name_bg.png"/>
+            <ImageBrush ImageSource="C:\Users\Виктория\Desktop\beskonechnoe_zuquemi\kurs\image\name_bg.png"/>
         </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -18,7 +18,7 @@
         <Label x:Name="scr" Content="" HorizontalAlignment="Left" Height="80" Margin="57,252,0,0" VerticalAlignment="Top" Width="285" Grid.ColumnSpan="2" FontSize="36" Foreground="#FFD71B73"/>
         <Button x:Name="done" Content="Done" HorizontalAlignment="Left" Height="60" Margin="57,365,0,0" VerticalAlignment="Top" Width="285" Click="Done_Click" Style="{DynamicResource myStyleIsAdongDigiDigi}" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.Column="1">
             <Button.Background>
-                <ImageBrush ImageSource="D:\Программирование\kurs\kurs\image\d_bt.png"/>
+                <ImageBrush ImageSource="C:\Users\Виктория\Desktop\beskonechnoe_zuquemi\kurs\image\d_bt.png"/>
             </Button.Background>
         </Button>
 
